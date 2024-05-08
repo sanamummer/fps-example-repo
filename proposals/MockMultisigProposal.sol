@@ -1,0 +1,100 @@
+pragma solidity ^0.8.0;
+
+import {MultisigProposal} from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
+import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {Vault} from "@forge-proposal-simulator/mocks/Vault.sol";
+import {Token} from "@forge-proposal-simulator/mocks/Token.sol";
+
+contract MockMultisigProposal is MultisigProposal {
+    function name() public pure override returns (string memory) {
+        return "MULTISIG_MOCK";
+    }
+
+    function description() public pure override returns (string memory) {
+        return "Multisig proposal mock";
+    }
+
+    function run() public override {
+        vm.makePersistent(address(addresses));
+        super.run();
+    }
+
+    function deploy() public override {
+        address multisig = addresses.getAddress("DEV_MULTISIG");
+        if (!addresses.isAddressSet("MULTISIG_VAULT")) {
+            Vault timelockVault = new Vault();
+
+            addresses.addAddress(
+                "MULTISIG_VAULT",
+                address(timelockVault),
+                true
+            );
+
+            timelockVault.transferOwnership(address(multisig));
+        }
+
+        if (!addresses.isAddressSet("MULTISIG_TOKEN")) {
+            Token token = new Token();
+            addresses.addAddress("MULTISIG_TOKEN", address(token), true);
+
+            token.transferOwnership(address(multisig));
+
+            // During forge script execution, the deployer of the contracts is
+            // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
+            uint256 balance = token.balanceOf(address(this)) > 0
+                ? token.balanceOf(address(this))
+                : token.balanceOf(addresses.getAddress("DEPLOYER_EOA"));
+
+            token.transfer(address(multisig), balance);
+        }
+    }
+
+    function build()
+        public
+        override
+        buildModifier(addresses.getAddress("DEV_MULTISIG"))
+    {
+        address multisig = addresses.getAddress("DEV_MULTISIG");
+
+        /// STATICCALL -- not recorded for the run stage
+        address timelockVault = addresses.getAddress("MULTISIG_VAULT");
+        address token = addresses.getAddress("MULTISIG_TOKEN");
+        uint256 balance = Token(token).balanceOf(address(multisig));
+
+        Vault(timelockVault).whitelistToken(token, true);
+
+        /// CALLS -- mutative and recorded
+        Token(token).approve(timelockVault, balance);
+        Vault(timelockVault).deposit(token, balance);
+    }
+
+    function simulate() public override {
+        /// Call parent simulate function to check if there are actions to execute
+        super.simulate();
+
+        address multisig = addresses.getAddress("DEV_MULTISIG");
+
+        /// Dev is proposer and executor
+        _simulateActions(multisig);
+    }
+
+    function validate() public override {
+        Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
+        Token token = Token(addresses.getAddress("MULTISIG_TOKEN"));
+        address multisig = addresses.getAddress("DEV_MULTISIG");
+
+        uint256 balance = token.balanceOf(address(timelockVault));
+        (uint256 amount, ) = timelockVault.deposits(
+            address(token),
+            address(multisig)
+        );
+        assertEq(amount, balance);
+
+        assertEq(timelockVault.owner(), address(multisig));
+        assertTrue(timelockVault.tokenWhitelist(address(token)));
+        assertFalse(timelockVault.paused());
+
+        assertEq(token.owner(), address(multisig));
+        assertEq(token.balanceOf(address(timelockVault)), token.totalSupply());
+    }
+}
