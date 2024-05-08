@@ -25,6 +25,24 @@
         "isContract": false
     },
     {
+        "addr": "0x2EE28b12156fCaa13Bb188347cE6635C18bc94ef",
+        "name": "PROTOCOL_GOVERNOR",
+        "chainId": 31337,
+        "isContract": false
+    },
+    {
+        "addr": "0x37039662a2364Df8206691c1D1b9ff8d22389290",
+        "name": "PROTOCOL_TIMELOCK_BRAVO",
+        "chainId": 31337,
+        "isContract": false
+    },
+    {
+        "addr": "0x201CA53059484131D3d8058ec8D9655117E05dC2",
+        "name": "PROTOCOL_GOVERNANCE_TOKEN",
+        "chainId": 31337,
+        "isContract": false
+    },
+    {
         "addr": "0x0000000000000000000000000000000000000001",
         "name": "DEPLOYER_EOA",
         "chainId": 31337,

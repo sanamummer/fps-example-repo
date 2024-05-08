@@ -11,7 +11,7 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
     // Tests if the Vault contract can be paused
     function test_vaultIsPausable() public {
         // Retrieves the Vault instance using its address from the Addresses contract
-        Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
+        Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         // Retrieves the address of the multisig wallet
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
@@ -19,16 +19,16 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
         vm.prank(multisig);
 
         // Executes pause function on the Vault
-        timelockVault.pause();
+        multisigVault.pause();
 
         // Asserts that the Vault is successfully paused
-        assertTrue(timelockVault.paused(), "Vault should be paused");
+        assertTrue(multisigVault.paused(), "Vault should be paused");
     }
 
     // Tests adding a token to the whitelist in the Vault contract
     function test_addTokenToWhitelist() public {
         // Retrieves the Vault instance using its address from the Addresses contract
-        Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
+        Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         // Retrieves the address of the multisig wallet
         address multisig = addresses.getAddress("DEV_MULTISIG");
         // Creates a new instance of Token
@@ -38,11 +38,11 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
         vm.prank(multisig);
 
         // Whitelists the newly created token in the Vault
-        timelockVault.whitelistToken(address(token), true);
+        multisigVault.whitelistToken(address(token), true);
 
         // Asserts that the token is successfully whitelisted
         assertTrue(
-            timelockVault.tokenWhitelist(address(token)),
+            multisigVault.tokenWhitelist(address(token)),
             "Token should be whitelisted"
         );
     }
