@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
-import {Vault} from "@forge-proposal-simulator/examples/Vault.sol";
-import {MockToken} from "@forge-proposal-simulator/examples/MockToken.sol";
+import {Vault} from "@forge-proposal-simulator/mocks/Vault.sol";
+import {Token} from "@forge-proposal-simulator/mocks/Token.sol";
 import {TimelockPostProposalCheck} from "./TimelockPostProposalCheck.sol";
 
 // @dev This test contract extends TimelockPostProposalCheck, granting it
@@ -9,7 +9,7 @@ import {TimelockPostProposalCheck} from "./TimelockPostProposalCheck.sol";
 // and to work with newly deployed contracts, if applicable.
 contract TimelockProposalIntegrationTest is TimelockPostProposalCheck {
     function test_vaultIsPausable() public {
-        Vault timelockVault = Vault(addresses.getAddress("VAULT"));
+        Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
 
         vm.prank(timelock);
@@ -20,9 +20,9 @@ contract TimelockProposalIntegrationTest is TimelockPostProposalCheck {
     }
 
     function test_addTokenToWhitelist() public {
-        Vault timelockVault = Vault(addresses.getAddress("VAULT"));
+        Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
-        MockToken token = new MockToken();
+        Token token = new Token();
 
         vm.prank(timelock);
 
@@ -34,14 +34,14 @@ contract TimelockProposalIntegrationTest is TimelockPostProposalCheck {
         );
     }
 
-    function test_depositToVaut() public {
-        Vault timelockVault = Vault(addresses.getAddress("VAULT"));
+    function test_depositToVault() public {
+        Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
-        address token = addresses.getAddress("TOKEN_1");
+        address token = addresses.getAddress("TIMELOCK_TOKEN");
 
         vm.startPrank(timelock);
-        MockToken(token).mint(address(this), 100);
-        MockToken(token).approve(address(timelockVault), 100);
+        Token(token).mint(address(this), 100);
+        Token(token).approve(address(timelockVault), 100);
         timelockVault.deposit(address(token), 100);
 
         (uint256 amount, ) = timelockVault.deposits(address(token), timelock);

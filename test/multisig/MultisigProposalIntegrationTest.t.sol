@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
-import {Vault} from "@forge-proposal-simulator/examples/Vault.sol";
-import {MockToken} from "@forge-proposal-simulator/examples/MockToken.sol";
+import {Vault} from "@forge-proposal-simulator/mocks/Vault.sol";
+import {Token} from "@forge-proposal-simulator/mocks/Token.sol";
 import {MultisigPostProposalCheck} from "./MultisigPostProposalCheck.sol";
 
 // @dev This test contract inherits MultisigPostProposalCheck, granting it
@@ -11,7 +11,7 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
     // Tests if the Vault contract can be paused
     function test_vaultIsPausable() public {
         // Retrieves the Vault instance using its address from the Addresses contract
-        Vault timelockVault = Vault(addresses.getAddress("VAULT"));
+        Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         // Retrieves the address of the multisig wallet
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
@@ -28,11 +28,11 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
     // Tests adding a token to the whitelist in the Vault contract
     function test_addTokenToWhitelist() public {
         // Retrieves the Vault instance using its address from the Addresses contract
-        Vault timelockVault = Vault(addresses.getAddress("VAULT"));
+        Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         // Retrieves the address of the multisig wallet
         address multisig = addresses.getAddress("DEV_MULTISIG");
-        // Creates a new instance of MockToken
-        MockToken token = new MockToken();
+        // Creates a new instance of Token
+        Token token = new Token();
 
         // Sets the next caller of the function to be the multisig address
         vm.prank(multisig);
@@ -48,25 +48,26 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
     }
 
     // Tests deposit functionality in the Vault contract
-    function test_depositToVaut() public {
+    function test_depositToVault() public {
         // Retrieves the Vault instance using its address from the Addresses contract
-        Vault timelockVault = Vault(addresses.getAddress("VAULT"));
+        Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         // Retrieves the address of the multisig wallet
         address multisig = addresses.getAddress("DEV_MULTISIG");
         // Retrieves the address of the token to be deposited
-        address token = addresses.getAddress("TOKEN_1");
+        address token = addresses.getAddress("MULTISIG_TOKEN");
 
         // Starts a prank session with the multisig address as the caller
         vm.startPrank(multisig);
         // Mints 100 tokens to the current contract's address
-        MockToken(token).mint(address(this), 100);
+        Token(token).mint(address(this), 100);
         // Approves the Vault to spend 100 tokens on behalf of this contract
-        MockToken(token).approve(address(timelockVault), 100);
+        Token(token).approve(address(multisigVault), 100);
+        assertEq(Token(token).balanceOf(multisig), 100);
         // Deposits 100 tokens into the Vault
-        timelockVault.deposit(address(token), 100);
+        multisigVault.deposit(address(token), 100);
 
         // Retrieves the deposit amount of the token in the Vault for the multisig address
-        (uint256 amount, ) = timelockVault.deposits(address(token), multisig);
+        (uint256 amount, ) = multisigVault.deposits(address(token), multisig);
         // Asserts that the deposit amount is equal to 100
         assertTrue(amount == 100, "Token should be deposited");
     }
