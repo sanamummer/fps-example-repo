@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import { ScriptSuite } from "@forge-proposal-simulator/script/ScriptSuite.s.sol";
-import { TimelockController } from "@openzeppelin/governance/TimelockController.sol";
-import { TIMELOCK_01 } from "proposals/TIMELOCK_01.sol";
+import "forge-std/Script.sol";
+
+import {TimelockController} from "@openzeppelin/governance/TimelockController.sol";
+import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {MockTimelockProposal} from "proposals/MockTimelockProposal.sol";
 
 // @notice TimelockScript is a script that run TIMELOCK_01 proposal
 // TIMELOCK_01 proposal deploys a Vault contract and an ERC20 token contract
@@ -12,12 +14,11 @@ import { TIMELOCK_01 } from "proposals/TIMELOCK_01.sol";
 // @dev Use this script to simulates or run a single proposal
 // Use this as a template to create your own script
 // `forge script script/Timelock.s.sol:TimelockScript -vvvv --rpc-url {rpc} --broadcast --verify --etherscan-api-key {key}`
-contract TimelockScript is ScriptSuite {
-    string public constant ADDRESSES_PATH = "./addresses/Addresses.json";
+contract TimelockScript is Script {
 
-    constructor() ScriptSuite(ADDRESSES_PATH, new TIMELOCK_01()) {}
-
-    function run() public override {
+    function run() public {
+        MockTimelockProposal timelockProposal = new MockTimelockProposal();
+        Addresses addresses = timelockProposal.addresses();
         // Verify if the timelock address is a contract; if is not (e.g. running on a empty blockchain node), deploy a new TimelockController and update the address.
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
         uint256 timelockSize;
@@ -28,7 +29,7 @@ contract TimelockScript is ScriptSuite {
         if (timelockSize == 0) {
             // Get proposer and executor addresses
             address proposer = addresses.getAddress("TIMELOCK_PROPOSER");
-            address executor = addresses.getAddress("TIMELOCK_EXECUTOR");
+            address executor = addresses.getAddress("TIMELOCK_PROPOSER");
 
             // Create arrays of addresses to pass to the TimelockController constructor
             address[] memory proposers = new address[](1);
@@ -46,13 +47,12 @@ contract TimelockScript is ScriptSuite {
             // Update PROTOCOL_TIMELOCK address
             addresses.changeAddress(
                 "PROTOCOL_TIMELOCK",
-                address(timelockController)
+                address(timelockController),
+                true
             );
 
-            proposal.setDebug(true);
-
             // Execute proposal
-            super.run();
+            timelockProposal.run();
         }
     }
 }
