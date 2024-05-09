@@ -1,51 +1,69 @@
 
 [
-   {
-        "addr": "0x3dd46846eed8D147841AE162C8425c08BD8E1b41",
+    {
+        "addr": "0xA454F330A728389b87A255b3D59aB10aEABa0C84",
         "name": "DEV_MULTISIG",
-        "chainId": 31337,
-        "isContract": false
+        "chainId": 11155111,
+        "isContract": true
     },
     {
-        "addr": "0x7da82C7AB4771ff031b66538D2fB9b0B047f6CF9",
-        "name": "TEAM_MULTISIG",
-        "chainId": 31337,
-        "isContract": false
-    },
-    {
-        "addr": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
-        "name": "PROTOCOL_TIMELOCK",
-        "chainId": 31337,
-        "isContract": false
-    },
-    {
-        "addr": "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f",
-        "name": "TIMELOCK_PROPOSER",
-        "chainId": 31337,
+        "addr": "0x9679E26bf0C470521DE83Ad77BB1bf1e7312f739",
+        "name": "DEPLOYER_EOA",
+        "chainId": 11155111,
         "isContract": false
     },
     {
         "addr": "0x2EE28b12156fCaa13Bb188347cE6635C18bc94ef",
-        "name": "PROTOCOL_GOVERNOR",
-        "chainId": 31337,
-        "isContract": false
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_GOVERNOR"
     },
     {
         "addr": "0x37039662a2364Df8206691c1D1b9ff8d22389290",
-        "name": "PROTOCOL_TIMELOCK_BRAVO",
-        "chainId": 31337,
-        "isContract": false
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_TIMELOCK_BRAVO"
     },
     {
         "addr": "0x201CA53059484131D3d8058ec8D9655117E05dC2",
-        "name": "PROTOCOL_GOVERNANCE_TOKEN",
-        "chainId": 31337,
-        "isContract": false
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_GOVERNANCE_TOKEN"
     },
     {
-        "addr": "0x0000000000000000000000000000000000000001",
-        "name": "DEPLOYER_EOA",
-        "chainId": 31337,
-        "isContract": false
+        "addr": "0xAE96E645c7c7628BA9507B1e91A5fA3Cb1EB5DA1",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_TIMELOCK"
+    },
+    {
+        "addr": "0x35e292eA59C71caC368ecdf9046eF7C3ED0DF79E",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_GOVERNOR_ALPHA"
+    },
+    {
+        "addr": "0x7D26D5978cD4617C6c7a02C75a42927eF52f405C",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "TIMELOCK_VAULT"
+    },
+    {
+        "addr": "0x861bB12491F453F48fE1A05e9C034588de638262",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "TIMELOCK_TOKEN"
+    },
+    {
+        "addr": "0x0CB10d561C2a273AFBB81E535738BA3095E9dCF2",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "BRAVO_VAULT"
+    },
+    {
+        "addr": "0x76126BDFC0893d9A27336b93824778432cA60808",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "BRAVO_VAULT_TOKEN"
     }
 ]
