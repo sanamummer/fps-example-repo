@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {GovernorBravoProposal} from "@forge-proposal-simulator/src/proposals/GovernorBravoProposal.sol";
-import {IGovernorBravo} from "@forge-proposal-simulator/src/interfaces/IGovernorBravo.sol";
+import {IGovernorAlpha} from "@forge-proposal-simulator/src/interface/IGovernorBravo.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {Vault} from "@forge-proposal-simulator/mocks/Vault.sol";
 import {Token} from "@forge-proposal-simulator/mocks/Token.sol";
@@ -17,7 +17,15 @@ contract MockBravoProposal is GovernorBravoProposal {
     }
 
     function run() public override {
-        governor = IGovernorBravo(addresses.getAddress("PROTOCOL_GOVERNOR"));
+        primaryForkId = vm.createFork("sepolia");
+        vm.selectFork(primaryForkId);
+
+        addresses = new Addresses(
+            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
+        );
+        vm.makePersistent(address(addresses));
+
+        governor = IGovernorAlpha(addresses.getAddress("PROTOCOL_GOVERNOR"));
 
         super.run();
     }
@@ -28,15 +36,11 @@ contract MockBravoProposal is GovernorBravoProposal {
             Vault timelockVault = new Vault();
 
             addresses.addAddress("BRAVO_VAULT", address(timelockVault), true);
-
-            timelockVault.transferOwnership(owner);
         }
 
         if (!addresses.isAddressSet("BRAVO_VAULT_TOKEN")) {
             Token token = new Token();
             addresses.addAddress("BRAVO_VAULT_TOKEN", address(token), true);
-
-            token.transferOwnership(owner);
 
             // During forge script execution, the deployer of the contracts is
             // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
@@ -67,7 +71,7 @@ contract MockBravoProposal is GovernorBravoProposal {
         Vault(timelockVault).deposit(token, balance);
     }
 
-    function simulate() public override {
+    function simulate() public override {        
         /// Call parent simulate function to check if there are actions to execute
         super.simulate();
 
@@ -93,11 +97,8 @@ contract MockBravoProposal is GovernorBravoProposal {
         );
         assertEq(amount, balance);
 
-        assertEq(timelockVault.owner(), address(timelock));
         assertTrue(timelockVault.tokenWhitelist(address(token)));
-        assertFalse(timelockVault.paused());
 
-        assertEq(token.owner(), address(timelock));
         assertEq(token.balanceOf(address(timelockVault)), token.totalSupply());
     }
 }

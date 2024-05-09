@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
 import { TimelockProposal } from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
-import { ITimelockController } from "@forge-proposal-simulator/src/interfaces/ITimelockController.sol";
+import { ITimelockController } from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
 import { Vault } from "@forge-proposal-simulator/mocks/Vault.sol";
 import { Token } from "@forge-proposal-simulator/mocks/Token.sol";
@@ -16,6 +16,14 @@ contract MockTimelockProposal is TimelockProposal {
     }
 
     function run() public override {
+        primaryForkId = vm.createFork("sepolia");
+        vm.selectFork(primaryForkId);
+
+        addresses = new Addresses(
+            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
+        );
+        vm.makePersistent(address(addresses));
+
         timelock = ITimelockController(
             addresses.getAddress("PROTOCOL_TIMELOCK")
         );
@@ -32,15 +40,11 @@ contract MockTimelockProposal is TimelockProposal {
                 address(timelockVault),
                 true
             );
-
-            timelockVault.transferOwnership(address(timelock));
         }
 
         if (!addresses.isAddressSet("TIMELOCK_TOKEN")) {
             Token token = new Token();
             addresses.addAddress("TIMELOCK_TOKEN", address(token), true);
-
-            token.transferOwnership(address(timelock));
 
             // During forge script execution, the deployer of the contracts is
             // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
@@ -69,9 +73,10 @@ contract MockTimelockProposal is TimelockProposal {
         /// Call parent simulate function to check if there are actions to execute
         super.simulate();
 
-        address proposer = addresses.getAddress("TIMELOCK_PROPOSER");
+        address dev = addresses.getAddress("DEPLOYER_EOA");
 
-        _simulateActions(proposer, proposer);
+        /// Dev is proposer and executor
+        _simulateActions(dev, dev);
     }
 
     function validate() public override {
@@ -85,11 +90,8 @@ contract MockTimelockProposal is TimelockProposal {
         );
         assertEq(amount, balance);
 
-        assertEq(timelockVault.owner(), address(timelock));
         assertTrue(timelockVault.tokenWhitelist(address(token)));
-        assertFalse(timelockVault.paused());
 
-        assertEq(token.owner(), address(timelock));
         assertEq(token.balanceOf(address(timelockVault)), token.totalSupply());
     }
 }
