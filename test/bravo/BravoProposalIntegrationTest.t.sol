@@ -8,17 +8,7 @@ import { BravoPostProposalCheck } from "./BravoPostProposalCheck.sol";
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
 contract BravoProposalIntegrationTest is BravoPostProposalCheck {
-    // function test_vaultIsPausable() public {
-    //     Vault governorVault = Vault(addresses.getAddress("BRAVO_VAULT"));
-    //     address governor = addresses.getAddress("PROTOCOL_GOVERNOR");
-
-    //     vm.prank(governor);
-
-    //     governorVault.pause();
-
-    //     assertTrue(governorVault.paused(), "Vault should be paused");
-    // }
-
+    
     function test_addTokenToWhitelist() public {
         Vault governorVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");

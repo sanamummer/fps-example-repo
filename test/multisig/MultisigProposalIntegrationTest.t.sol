@@ -8,23 +8,6 @@ import { MultisigPostProposalCheck } from "./MultisigPostProposalCheck.sol";
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
 contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
-    // Tests if the Vault contract can be paused
-    // function test_vaultIsPausable() public {
-    //     // Retrieves the Vault instance using its address from the Addresses contract
-    //     Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
-    //     // Retrieves the address of the multisig wallet
-    //     address multisig = addresses.getAddress("DEV_MULTISIG");
-
-    //     // Sets the next caller of the function to be the multisig address
-    //     vm.prank(multisig);
-
-    //     // Executes pause function on the Vault
-    //     multisigVault.pause();
-
-    //     // Asserts that the Vault is successfully paused
-    //     assertTrue(multisigVault.paused(), "Vault should be paused");
-    // }
-
     // Tests adding a token to the whitelist in the Vault contract
     function test_addTokenToWhitelist() public {
         // Retrieves the Vault instance using its address from the Addresses contract

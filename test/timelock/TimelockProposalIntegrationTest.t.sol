@@ -8,17 +8,6 @@ import { TimelockPostProposalCheck } from "./TimelockPostProposalCheck.sol";
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
 contract TimelockProposalIntegrationTest is TimelockPostProposalCheck {
-    // function test_vaultIsPausable() public {
-    //     Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
-    //     address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
-
-    //     vm.prank(timelock);
-
-    //     timelockVault.pause();
-
-    //     assertTrue(timelockVault.paused(), "Vault should be paused");
-    // }
-
     function test_addTokenToWhitelist() public {
         Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
