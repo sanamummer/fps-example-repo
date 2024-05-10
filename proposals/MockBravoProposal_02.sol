@@ -7,13 +7,13 @@ import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {Vault} from "proposals/utils/Vault.sol";
 import {Token} from "proposals/utils/Token.sol";
 
-contract MockBravoProposal is GovernorBravoProposal {
+contract MockBravoProposal_02 is GovernorBravoProposal {
     function name() public pure override returns (string memory) {
-        return "BRAVO_MOCK";
+        return "BRAVO_MOCK_2";
     }
 
     function description() public pure override returns (string memory) {
-        return "Bravo proposal mock";
+        return "Bravo proposal mock 2";
     }
 
     function run() public override {
@@ -30,45 +30,23 @@ contract MockBravoProposal is GovernorBravoProposal {
         super.run();
     }
 
-    function deploy() public override {
-        address owner = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
-        if (!addresses.isAddressSet("BRAVO_VAULT")) {
-            Vault timelockVault = new Vault();
-
-            addresses.addAddress("BRAVO_VAULT", address(timelockVault), true);
-        }
-
-        if (!addresses.isAddressSet("BRAVO_VAULT_TOKEN")) {
-            Token token = new Token();
-            addresses.addAddress("BRAVO_VAULT_TOKEN", address(token), true);
-
-            // During forge script execution, the deployer of the contracts is
-            // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
-            uint256 balance = token.balanceOf(address(this)) > 0
-                ? token.balanceOf(address(this))
-                : token.balanceOf(addresses.getAddress("DEPLOYER_EOA"));
-
-            token.transfer(address(owner), balance);
-        }
-    }
-
     function build()
         public
         override
         buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
     {
         /// STATICCALL -- not recorded for the run stage
-        address timelockVault = addresses.getAddress("BRAVO_VAULT");
+        address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
+        Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address token = addresses.getAddress("BRAVO_VAULT_TOKEN");
-        uint256 balance = Token(token).balanceOf(
-            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
+        uint256 balance = Token(token).balanceOf(timelock);
+        (uint256 amount, ) = bravoVault.deposits(
+            address(token),
+            timelock
         );
 
-        Vault(timelockVault).whitelistToken(token, true);
-
         /// CALLS -- mutative and recorded
-        Token(token).approve(timelockVault, balance);
-        Vault(timelockVault).deposit(token, balance);
+        bravoVault.withdraw(token, timelock, amount);
     }
 
     function simulate() public override {        
@@ -85,20 +63,18 @@ contract MockBravoProposal is GovernorBravoProposal {
     }
 
     function validate() public override {
-        Vault timelockVault = Vault(addresses.getAddress("BRAVO_VAULT"));
+        Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         Token token = Token(addresses.getAddress("BRAVO_VAULT_TOKEN"));
 
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
 
-        uint256 balance = token.balanceOf(address(timelockVault));
-        (uint256 amount, ) = timelockVault.deposits(
+        uint256 balance = token.balanceOf(address(bravoVault));
+        assertEq(balance, 0);
+        
+        (uint256 amount, ) = bravoVault.deposits(
             address(token),
             address(timelock)
         );
-        assertEq(amount, balance);
-
-        assertTrue(timelockVault.tokenWhitelist(address(token)));
-
-        assertEq(token.balanceOf(address(timelockVault)), token.totalSupply());
+        assertEq(amount, 0);
     }
 }
