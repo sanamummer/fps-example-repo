@@ -2,7 +2,7 @@ pragma solidity ^0.8.0;
 
 import "@forge-std/Test.sol";
 
-import {MockMultisigProposal_01} from "proposals/MockMultisigProposal_01.sol";
+import {MultisigProposal_01} from "proposals/MultisigProposal_01.sol";
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
@@ -12,7 +12,7 @@ contract MultisigPostProposalCheck is Test {
     Addresses public addresses;
 
     function setUp() public virtual {
-        MockMultisigProposal_01 multisigProposal = new MockMultisigProposal_01();
+        MultisigProposal_01 multisigProposal = new MultisigProposal_01();
 
         // Execute proposals
         multisigProposal.run();

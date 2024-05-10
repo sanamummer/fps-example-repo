@@ -7,7 +7,7 @@ import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {Vault} from "proposals/utils/Vault.sol";
 import {Token} from "proposals/utils/Token.sol";
 
-contract MockBravoProposal_01 is GovernorBravoProposal {
+contract BravoProposal_01 is GovernorBravoProposal {
     function name() public pure override returns (string memory) {
         return "BRAVO_MOCK";
     }

@@ -2,7 +2,7 @@ pragma solidity ^0.8.0;
 
 import "@forge-std/Test.sol";
 
-import {MockTimelockProposal_01} from "proposals/MockTimelockProposal_01.sol";
+import {TimelockProposal_01} from "proposals/TimelockProposal_01.sol";
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
@@ -12,7 +12,7 @@ contract TimelockPostProposalCheck is Test {
     Addresses public addresses;
 
     function setUp() public {
-        MockTimelockProposal_01 timelockProposal = new MockTimelockProposal_01();
+        TimelockProposal_01 timelockProposal = new TimelockProposal_01();
 
         // Execute proposals
         timelockProposal.run();

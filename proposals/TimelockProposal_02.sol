@@ -6,7 +6,7 @@ import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
 import { Vault } from "proposals/utils/Vault.sol";
 import { Token } from "proposals/utils/Token.sol";
 
-contract MockTimelockProposal_02 is TimelockProposal {
+contract TimelockProposal_02 is TimelockProposal {
     function name() public pure override returns (string memory) {
         return "TIMELOCK_MOCK_2";
     }

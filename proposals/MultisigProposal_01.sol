@@ -5,7 +5,7 @@ import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
 import { Vault } from "proposals/utils/Vault.sol";
 import { Token } from "proposals/utils/Token.sol";
 
-contract MockMultisigProposal_01 is MultisigProposal {
+contract MultisigProposal_01 is MultisigProposal {
     function name() public pure override returns (string memory) {
         return "MULTISIG_MOCK";
     }

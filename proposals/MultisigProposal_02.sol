@@ -6,7 +6,7 @@ import { Vault } from "proposals/utils/Vault.sol";
 import { Token } from "proposals/utils/Token.sol";
 import {console} from "@forge-std/console.sol";
 
-contract MockMultisigProposal_02 is MultisigProposal {
+contract MultisigProposal_02 is MultisigProposal {
     function name() public pure override returns (string memory) {
         return "MULTISIG_MOCK_02";
     }
