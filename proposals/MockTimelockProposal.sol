@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 import { TimelockProposal } from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
 import { ITimelockController } from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
-import { Vault } from "@forge-proposal-simulator/mocks/Vault.sol";
-import { Token } from "@forge-proposal-simulator/mocks/Token.sol";
+import { Vault } from "proposals/utils/Vault.sol";
+import { Token } from "proposals/utils/Token.sol";
 
 contract MockTimelockProposal is TimelockProposal {
     function name() public pure override returns (string memory) {
