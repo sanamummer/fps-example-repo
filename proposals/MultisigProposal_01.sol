@@ -2,8 +2,8 @@ pragma solidity ^0.8.0;
 
 import { MultisigProposal } from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
 import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
-import { Vault } from "proposals/utils/Vault.sol";
-import { Token } from "proposals/utils/Token.sol";
+import { Vault } from "mocks/Vault.sol";
+import { Token } from "mocks/Token.sol";
 
 contract MultisigProposal_01 is MultisigProposal {
     function name() public pure override returns (string memory) {

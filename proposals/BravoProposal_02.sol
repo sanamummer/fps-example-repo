@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import {GovernorBravoProposal} from "@forge-proposal-simulator/src/proposals/GovernorBravoProposal.sol";
 import {IGovernorAlpha} from "@forge-proposal-simulator/src/interface/IGovernorBravo.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
-import {Vault} from "proposals/utils/Vault.sol";
-import {Token} from "proposals/utils/Token.sol";
+import {Vault} from "mocks/Vault.sol";
+import {Token} from "mocks/Token.sol";
 
 contract BravoProposal_02 is GovernorBravoProposal {
     function name() public pure override returns (string memory) {

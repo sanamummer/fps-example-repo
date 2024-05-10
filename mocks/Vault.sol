@@ -1,8 +1,10 @@
 pragma solidity ^0.8.0;
 
-import {IERC20} from "./IERC20.sol";
+import {Ownable} from "@openzeppelin/access/Ownable.sol";
+import {Pausable} from "@openzeppelin/security/Pausable.sol";
+import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
 
-contract Vault {
+contract Vault is Ownable, Pausable {
     uint256 public LOCK_PERIOD = 1 weeks;
 
     struct Deposit {
@@ -14,11 +16,13 @@ contract Vault {
         public deposits;
     mapping(address _token => bool _isWhitelisted) public tokenWhitelist;
 
-    function whitelistToken(address token, bool active) external {
+    constructor() Ownable() Pausable() {}
+
+    function whitelistToken(address token, bool active) external onlyOwner {
         tokenWhitelist[token] = active;
     }
 
-    function deposit(address token, uint256 amount) external {
+    function deposit(address token, uint256 amount) external whenNotPaused {
         require(tokenWhitelist[token], "Vault: token must be active");
         require(amount > 0, "Vault: amount must be greater than 0");
         require(token != address(0), "Vault: token must not be 0x0");
@@ -34,7 +38,7 @@ contract Vault {
         address token,
         address payable to,
         uint256 amount
-    ) external {
+    ) external whenNotPaused {
         require(tokenWhitelist[token], "Vault: token must be active");
         require(amount > 0, "Vault: amount must be greater than 0");
         require(token != address(0), "Vault: token must not be 0x0");
@@ -52,5 +56,13 @@ contract Vault {
         userDeposit.amount -= amount;
 
         IERC20(token).transfer(to, amount);
+    }
+
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    function unpause() external onlyOwner {
+        _unpause();
     }
 }
