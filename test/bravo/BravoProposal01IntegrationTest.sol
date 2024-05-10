@@ -1,14 +1,13 @@
 pragma solidity ^0.8.0;
 
-import { Vault } from "proposals/utils/Vault.sol";
-import { Token } from "proposals/utils/Token.sol";
-import { BravoPostProposalCheck } from "./BravoPostProposalCheck.sol";
+import {Vault} from "proposals/utils/Vault.sol";
+import {Token} from "proposals/utils/Token.sol";
+import {BravoPostProposalCheck} from "./BravoPostProposalCheck.sol";
 
 // @dev This test contract extends BravoPostProposalCheck, granting it
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
 contract BravoProposal01IntegrationTest is BravoPostProposalCheck {
-    
     function test_addTokenToWhitelist() public {
         Vault governorVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
@@ -18,10 +17,7 @@ contract BravoProposal01IntegrationTest is BravoPostProposalCheck {
 
         governorVault.whitelistToken(address(token), true);
 
-        assertTrue(
-            governorVault.tokenWhitelist(address(token)),
-            "Token should be whitelisted"
-        );
+        assertTrue(governorVault.tokenWhitelist(address(token)), "Token should be whitelisted");
     }
 
     function test_depositToVault() public {
@@ -34,7 +30,7 @@ contract BravoProposal01IntegrationTest is BravoPostProposalCheck {
         Token(token).approve(address(governorVault), 100);
         governorVault.deposit(address(token), 100);
 
-        (uint256 amount, ) = governorVault.deposits(token, timelock);
+        (uint256 amount,) = governorVault.deposits(token, timelock);
         assertTrue(amount == (1e25 + 100), "Token should be deposited");
     }
 }

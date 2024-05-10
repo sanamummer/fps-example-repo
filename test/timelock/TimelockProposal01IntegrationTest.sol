@@ -1,8 +1,8 @@
 pragma solidity ^0.8.0;
 
-import { Vault } from "proposals/utils/Vault.sol";
-import { Token } from "proposals/utils/Token.sol";
-import { TimelockPostProposalCheck } from "./TimelockPostProposalCheck.sol";
+import {Vault} from "proposals/utils/Vault.sol";
+import {Token} from "proposals/utils/Token.sol";
+import {TimelockPostProposalCheck} from "./TimelockPostProposalCheck.sol";
 
 // @dev This test contract extends TimelockPostProposalCheck, granting it
 // the ability to interact with state modifications effected by proposals
@@ -17,10 +17,7 @@ contract TimelockProposal01IntegrationTest is TimelockPostProposalCheck {
 
         timelockVault.whitelistToken(address(token), true);
 
-        assertTrue(
-            timelockVault.tokenWhitelist(address(token)),
-            "Token should be whitelisted"
-        );
+        assertTrue(timelockVault.tokenWhitelist(address(token)), "Token should be whitelisted");
     }
 
     function test_depositToVault() public {
@@ -33,7 +30,7 @@ contract TimelockProposal01IntegrationTest is TimelockPostProposalCheck {
         Token(token).approve(address(timelockVault), 100);
         timelockVault.deposit(address(token), 100);
 
-        (uint256 amount, ) = timelockVault.deposits(address(token), timelock);
+        (uint256 amount,) = timelockVault.deposits(address(token), timelock);
         assertTrue(amount == 1e25 + 100, "Token should be deposited");
     }
 }
