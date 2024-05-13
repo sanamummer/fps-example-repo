@@ -21,20 +21,11 @@ contract DeployTimelock is Script {
 
         vm.startBroadcast();
         // Deploy a new TimelockController
-        TimelockController timelockController = new TimelockController(
-            60,
-            proposers,
-            executors,
-            address(0)
-        );
+        TimelockController timelockController = new TimelockController(60, proposers, executors, address(0));
         vm.stopBroadcast();
 
         // Change PROTOCOL_TIMELOCK address
-        addresses.changeAddress(
-            "PROTOCOL_TIMELOCK",
-            address(timelockController),
-            true
-        );
+        addresses.changeAddress("PROTOCOL_TIMELOCK", address(timelockController), true);
 
         addresses.printJSONChanges();
     }

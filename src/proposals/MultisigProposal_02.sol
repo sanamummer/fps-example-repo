@@ -1,9 +1,9 @@
 pragma solidity ^0.8.0;
 
-import { MultisigProposal } from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
-import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
-import { Vault } from "mocks/Vault.sol";
-import { Token } from "mocks/Token.sol";
+import {MultisigProposal} from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
+import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {Vault} from "mocks/Vault.sol";
+import {Token} from "mocks/Token.sol";
 import {console} from "@forge-std/console.sol";
 
 contract MultisigProposal_02 is MultisigProposal {
@@ -18,28 +18,19 @@ contract MultisigProposal_02 is MultisigProposal {
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
 
-        setAddresses(new Addresses(
-            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        ));
+        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))));
         vm.makePersistent(address(addresses));
 
         super.run();
     }
 
-    function build()
-        public
-        override
-        buildModifier(addresses.getAddress("DEV_MULTISIG"))
-    {
+    function build() public override buildModifier(addresses.getAddress("DEV_MULTISIG")) {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// STATICCALL -- not recorded for the run stage
         Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         address token = addresses.getAddress("MULTISIG_TOKEN");
-        (uint256 amount, ) = multisigVault.deposits(
-            address(token),
-            multisig
-        );
+        (uint256 amount,) = multisigVault.deposits(address(token), multisig);
 
         /// CALLS -- mutative and recorded
         multisigVault.withdraw(token, payable(multisig), amount);
@@ -59,7 +50,7 @@ contract MultisigProposal_02 is MultisigProposal {
         uint256 balance = token.balanceOf(address(timelockVault));
         assertEq(balance, 0);
 
-        (uint256 amount, ) = timelockVault.deposits(address(token), multisig);
+        (uint256 amount,) = timelockVault.deposits(address(token), multisig);
         assertEq(amount, 0);
 
         assertEq(token.balanceOf(multisig), 10_000_000e18);

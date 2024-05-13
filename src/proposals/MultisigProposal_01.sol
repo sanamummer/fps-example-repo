@@ -1,9 +1,9 @@
 pragma solidity ^0.8.0;
 
-import { MultisigProposal } from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
-import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
-import { Vault } from "mocks/Vault.sol";
-import { Token } from "mocks/Token.sol";
+import {MultisigProposal} from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
+import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {Vault} from "mocks/Vault.sol";
+import {Token} from "mocks/Token.sol";
 
 contract MultisigProposal_01 is MultisigProposal {
     function name() public pure override returns (string memory) {
@@ -16,10 +16,8 @@ contract MultisigProposal_01 is MultisigProposal {
 
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
-        
-        setAddresses(new Addresses(
-            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        ));
+
+        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))));
         vm.makePersistent(address(addresses));
 
         super.run();
@@ -30,11 +28,7 @@ contract MultisigProposal_01 is MultisigProposal {
         if (!addresses.isAddressSet("MULTISIG_VAULT")) {
             Vault multisigVault = new Vault();
 
-            addresses.addAddress(
-                "MULTISIG_VAULT",
-                address(multisigVault),
-                true
-            );
+            addresses.addAddress("MULTISIG_VAULT", address(multisigVault), true);
 
             multisigVault.transferOwnership(multisig);
         }
@@ -43,7 +37,7 @@ contract MultisigProposal_01 is MultisigProposal {
             Token token = new Token();
             addresses.addAddress("MULTISIG_TOKEN", address(token), true);
             token.transferOwnership(multisig);
-            
+
             // During forge script execution, the deployer of the contracts is
             // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
             uint256 balance = token.balanceOf(address(this)) > 0
@@ -54,11 +48,7 @@ contract MultisigProposal_01 is MultisigProposal {
         }
     }
 
-    function build()
-        public
-        override
-        buildModifier(addresses.getAddress("DEV_MULTISIG"))
-    {
+    function build() public override buildModifier(addresses.getAddress("DEV_MULTISIG")) {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// STATICCALL -- not recorded for the run stage
@@ -85,7 +75,7 @@ contract MultisigProposal_01 is MultisigProposal {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         uint256 balance = token.balanceOf(address(multisigVault));
-        (uint256 amount, ) = multisigVault.deposits(address(token), multisig);
+        (uint256 amount,) = multisigVault.deposits(address(token), multisig);
         assertEq(amount, balance);
 
         assertTrue(multisigVault.tokenWhitelist(address(token)));

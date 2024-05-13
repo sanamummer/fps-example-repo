@@ -41,10 +41,7 @@ contract DeployGovernorBravo is Script {
             address(timelock),
             0,
             "",
-            abi.encodeWithSignature(
-                "setPendingAdmin(address)",
-                address(governor)
-            ),
+            abi.encodeWithSignature("setPendingAdmin(address)", address(governor)),
             block.timestamp + 180
         );
 
@@ -54,17 +51,9 @@ contract DeployGovernorBravo is Script {
         addresses.changeAddress("PROTOCOL_GOVERNOR", address(governor), true);
 
         // Update PROTOCOL_TIMELOCK_BRAVO address
-        addresses.changeAddress(
-            "PROTOCOL_TIMELOCK_BRAVO",
-            address(timelock),
-            true
-        );
+        addresses.changeAddress("PROTOCOL_TIMELOCK_BRAVO", address(timelock), true);
 
-        addresses.changeAddress(
-            "PROTOCOL_GOVERNANCE_TOKEN",
-            address(govToken),
-            true
-        );
+        addresses.changeAddress("PROTOCOL_GOVERNANCE_TOKEN", address(govToken), true);
 
         addresses.printJSONChanges();
     }

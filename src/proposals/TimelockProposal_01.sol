@@ -1,10 +1,10 @@
 pragma solidity ^0.8.0;
 
-import { TimelockProposal } from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
-import { ITimelockController } from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
-import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
-import { Vault } from "mocks/Vault.sol";
-import { Token } from "mocks/Token.sol";
+import {TimelockProposal} from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
+import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
+import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {Vault} from "mocks/Vault.sol";
+import {Token} from "mocks/Token.sol";
 
 contract TimelockProposal_01 is TimelockProposal {
     function name() public pure override returns (string memory) {
@@ -18,9 +18,7 @@ contract TimelockProposal_01 is TimelockProposal {
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
         vm.selectFork(primaryForkId);
-        setAddresses(new Addresses(
-            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        ));
+        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))));
         vm.makePersistent(address(addresses));
 
         setTimelock(addresses.getAddress("PROTOCOL_TIMELOCK"));
@@ -32,11 +30,7 @@ contract TimelockProposal_01 is TimelockProposal {
         if (!addresses.isAddressSet("TIMELOCK_VAULT")) {
             Vault timelockVault = new Vault();
 
-            addresses.addAddress(
-                "TIMELOCK_VAULT",
-                address(timelockVault),
-                true
-            );
+            addresses.addAddress("TIMELOCK_VAULT", address(timelockVault), true);
 
             timelockVault.transferOwnership(address(timelock));
         }
@@ -81,10 +75,7 @@ contract TimelockProposal_01 is TimelockProposal {
         Token token = Token(addresses.getAddress("TIMELOCK_TOKEN"));
 
         uint256 balance = token.balanceOf(address(timelockVault));
-        (uint256 amount, ) = timelockVault.deposits(
-            address(token),
-            address(timelock)
-        );
+        (uint256 amount,) = timelockVault.deposits(address(token), address(timelock));
         assertEq(amount, balance);
 
         assertTrue(timelockVault.tokenWhitelist(address(token)));

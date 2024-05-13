@@ -1,10 +1,10 @@
 pragma solidity ^0.8.0;
 
-import { TimelockProposal } from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
-import { ITimelockController } from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
-import { Addresses } from "@forge-proposal-simulator/addresses/Addresses.sol";
-import { Vault } from "mocks/Vault.sol";
-import { Token } from "mocks/Token.sol";
+import {TimelockProposal} from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
+import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
+import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {Vault} from "mocks/Vault.sol";
+import {Token} from "mocks/Token.sol";
 
 contract TimelockProposal_02 is TimelockProposal {
     function name() public pure override returns (string memory) {
@@ -19,9 +19,7 @@ contract TimelockProposal_02 is TimelockProposal {
         primaryForkId = vm.createFork("sepolia");
         vm.selectFork(primaryForkId);
 
-        setAddresses(new Addresses(
-            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        ));
+        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))));
         vm.makePersistent(address(addresses));
 
         setTimelock(addresses.getAddress("PROTOCOL_TIMELOCK"));
@@ -33,14 +31,10 @@ contract TimelockProposal_02 is TimelockProposal {
         /// STATICCALL -- not recorded for the run stage
         Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         address token = addresses.getAddress("TIMELOCK_TOKEN");
-        uint256 balance = Token(token).balanceOf(address(timelock));
-        (uint256 amount, ) = timelockVault.deposits(
-            address(token),
-            address(timelock)
-        );
+        (uint256 amount,) = timelockVault.deposits(address(token), address(timelock));
 
         /// CALLS -- mutative and recorded
-        timelockVault.withdraw(token, address(timelock), amount);
+        timelockVault.withdraw(token, payable(address(timelock)), amount);
     }
 
     function simulate() public override {
@@ -57,10 +51,7 @@ contract TimelockProposal_02 is TimelockProposal {
         uint256 balance = token.balanceOf(address(timelockVault));
         assertEq(balance, 0);
 
-        (uint256 amount, ) = timelockVault.deposits(
-            address(token),
-            address(timelock)
-        );
+        (uint256 amount,) = timelockVault.deposits(address(token), address(timelock));
         assertEq(amount, 0);
 
         assertEq(token.balanceOf(address(timelock)), 10_000_000e18);
