@@ -33,14 +33,16 @@ contract BravoProposal_01 is GovernorBravoProposal {
     function deploy() public override {
         address owner = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
         if (!addresses.isAddressSet("BRAVO_VAULT")) {
-            Vault timelockVault = new Vault();
+            Vault bravoVault = new Vault();
 
-            addresses.addAddress("BRAVO_VAULT", address(timelockVault), true);
+            addresses.addAddress("BRAVO_VAULT", address(bravoVault), true);
+            bravoVault.transferOwnership(owner);
         }
 
         if (!addresses.isAddressSet("BRAVO_VAULT_TOKEN")) {
             Token token = new Token();
             addresses.addAddress("BRAVO_VAULT_TOKEN", address(token), true);
+            token.transferOwnership(owner);
 
             // During forge script execution, the deployer of the contracts is
             // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
@@ -58,47 +60,39 @@ contract BravoProposal_01 is GovernorBravoProposal {
         buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
     {
         /// STATICCALL -- not recorded for the run stage
-        address timelockVault = addresses.getAddress("BRAVO_VAULT");
+        address bravoVault = addresses.getAddress("BRAVO_VAULT");
         address token = addresses.getAddress("BRAVO_VAULT_TOKEN");
         uint256 balance = Token(token).balanceOf(
             addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
         );
 
-        Vault(timelockVault).whitelistToken(token, true);
+        Vault(bravoVault).whitelistToken(token, true);
 
         /// CALLS -- mutative and recorded
-        Token(token).approve(timelockVault, balance);
-        Vault(timelockVault).deposit(token, balance);
+        Token(token).approve(bravoVault, balance);
+        Vault(bravoVault).deposit(token, balance);
     }
 
     function simulate() public override {        
-        /// Call parent simulate function to check if there are actions to execute
-        super.simulate();
-
-        address governanceToken = addresses.getAddress(
-            "PROTOCOL_GOVERNANCE_TOKEN"
-        );
-        address proposer = addresses.getAddress("DEPLOYER_EOA");
-
-        /// Dev is proposer and executor
-        _simulateActions(governanceToken, proposer);
+        _simulateActions();
     }
 
+    // Todo: Add validation for ownership transfer
     function validate() public override {
-        Vault timelockVault = Vault(addresses.getAddress("BRAVO_VAULT"));
+        Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         Token token = Token(addresses.getAddress("BRAVO_VAULT_TOKEN"));
 
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
 
-        uint256 balance = token.balanceOf(address(timelockVault));
-        (uint256 amount, ) = timelockVault.deposits(
+        uint256 balance = token.balanceOf(address(bravoVault));
+        (uint256 amount, ) = bravoVault.deposits(
             address(token),
             address(timelock)
         );
         assertEq(amount, balance);
 
-        assertTrue(timelockVault.tokenWhitelist(address(token)));
+        assertTrue(bravoVault.tokenWhitelist(address(token)));
 
-        assertEq(token.balanceOf(address(timelockVault)), token.totalSupply());
+        assertEq(token.balanceOf(address(bravoVault)), token.totalSupply());
     }
 }

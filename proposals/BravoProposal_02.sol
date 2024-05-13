@@ -50,18 +50,9 @@ contract BravoProposal_02 is GovernorBravoProposal {
     }
 
     function simulate() public override {        
-        /// Call parent simulate function to check if there are actions to execute
-        super.simulate();
-
-        address governanceToken = addresses.getAddress(
-            "PROTOCOL_GOVERNANCE_TOKEN"
-        );
-        address proposer = addresses.getAddress("DEPLOYER_EOA");
-
-        /// Dev is proposer and executor
-        _simulateActions(governanceToken, proposer);
+        _simulateActions();
     }
-
+    // todo: check that vault receives the amount
     function validate() public override {
         Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         Token token = Token(addresses.getAddress("BRAVO_VAULT_TOKEN"));

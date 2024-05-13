@@ -18,12 +18,12 @@ contract TimelockProposal_01 is TimelockProposal {
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
         vm.selectFork(primaryForkId);
-
+        // todo: call set address
         addresses = new Addresses(
             vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
         );
         vm.makePersistent(address(addresses));
-
+        // todo: call set timelock
         timelock = ITimelockController(
             addresses.getAddress("PROTOCOL_TIMELOCK")
         );
@@ -40,11 +40,14 @@ contract TimelockProposal_01 is TimelockProposal {
                 address(timelockVault),
                 true
             );
+
+            timelockVault.transferOwnership(address(timelock));
         }
 
         if (!addresses.isAddressSet("TIMELOCK_TOKEN")) {
             Token token = new Token();
             addresses.addAddress("TIMELOCK_TOKEN", address(token), true);
+            token.transferOwnership(address(timelock));
 
             // During forge script execution, the deployer of the contracts is
             // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
@@ -70,9 +73,6 @@ contract TimelockProposal_01 is TimelockProposal {
     }
 
     function simulate() public override {
-        /// Call parent simulate function to check if there are actions to execute
-        super.simulate();
-
         address dev = addresses.getAddress("DEPLOYER_EOA");
 
         /// Dev is proposer and executor

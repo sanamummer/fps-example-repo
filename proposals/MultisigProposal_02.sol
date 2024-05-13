@@ -14,7 +14,7 @@ contract MultisigProposal_02 is MultisigProposal {
     function description() public pure override returns (string memory) {
         return "Multisig proposal mock 2";
     }
-
+    /// Todo: set address
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
 
@@ -43,15 +43,12 @@ contract MultisigProposal_02 is MultisigProposal {
     }
 
     function simulate() public override {
-        /// Call parent simulate function to check if there are actions to execute
-        super.simulate();
-
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// Dev is proposer and executor
         _simulateActions(multisig);
     }
-
+    /// Todo: check balance multisig
     function validate() public override {
         Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         Token token = Token(addresses.getAddress("MULTISIG_TOKEN"));

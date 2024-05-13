@@ -28,19 +28,22 @@ contract MultisigProposal_01 is MultisigProposal {
     function deploy() public override {
         address multisig = addresses.getAddress("DEV_MULTISIG");
         if (!addresses.isAddressSet("MULTISIG_VAULT")) {
-            Vault timelockVault = new Vault();
+            Vault multisigVault = new Vault();
 
             addresses.addAddress(
                 "MULTISIG_VAULT",
-                address(timelockVault),
+                address(multisigVault),
                 true
             );
+
+            multisigVault.transferOwnership(multisig);
         }
 
         if (!addresses.isAddressSet("MULTISIG_TOKEN")) {
             Token token = new Token();
             addresses.addAddress("MULTISIG_TOKEN", address(token), true);
-
+            token.transferOwnership(multisig);
+            
             // During forge script execution, the deployer of the contracts is
             // the DEPLOYER_EOA. However, when running through forge test, the deployer of the contracts is this contract.
             uint256 balance = token.balanceOf(address(this)) > 0
@@ -59,38 +62,35 @@ contract MultisigProposal_01 is MultisigProposal {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// STATICCALL -- not recorded for the run stage
-        address timelockVault = addresses.getAddress("MULTISIG_VAULT");
+        address multisigVault = addresses.getAddress("MULTISIG_VAULT");
         address token = addresses.getAddress("MULTISIG_TOKEN");
         uint256 balance = Token(token).balanceOf(address(multisig));
 
-        Vault(timelockVault).whitelistToken(token, true);
+        Vault(multisigVault).whitelistToken(token, true);
 
         /// CALLS -- mutative and recorded
-        Token(token).approve(timelockVault, balance);
-        Vault(timelockVault).deposit(token, balance);
+        Token(token).approve(multisigVault, balance);
+        Vault(multisigVault).deposit(token, balance);
     }
 
     function simulate() public override {
-        /// Call parent simulate function to check if there are actions to execute
-        super.simulate();
-
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// Dev is proposer and executor
         _simulateActions(multisig);
     }
-
+    /// Todo: transfer ownership validate
     function validate() public override {
-        Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
+        Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         Token token = Token(addresses.getAddress("MULTISIG_TOKEN"));
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
-        uint256 balance = token.balanceOf(address(timelockVault));
-        (uint256 amount, ) = timelockVault.deposits(address(token), multisig);
+        uint256 balance = token.balanceOf(address(multisigVault));
+        (uint256 amount, ) = multisigVault.deposits(address(token), multisig);
         assertEq(amount, balance);
 
-        assertTrue(timelockVault.tokenWhitelist(address(token)));
+        assertTrue(multisigVault.tokenWhitelist(address(token)));
 
-        assertEq(token.balanceOf(address(timelockVault)), token.totalSupply());
+        assertEq(token.balanceOf(address(multisigVault)), token.totalSupply());
     }
 }
