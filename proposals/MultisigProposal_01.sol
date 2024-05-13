@@ -17,9 +17,9 @@ contract MultisigProposal_01 is MultisigProposal {
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
         
-        addresses = new Addresses(
+        setAddresses(new Addresses(
             vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        );
+        ));
         vm.makePersistent(address(addresses));
 
         super.run();
@@ -76,10 +76,9 @@ contract MultisigProposal_01 is MultisigProposal {
     function simulate() public override {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
-        /// Dev is proposer and executor
         _simulateActions(multisig);
     }
-    /// Todo: transfer ownership validate
+
     function validate() public override {
         Vault multisigVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         Token token = Token(addresses.getAddress("MULTISIG_TOKEN"));
@@ -92,5 +91,13 @@ contract MultisigProposal_01 is MultisigProposal {
         assertTrue(multisigVault.tokenWhitelist(address(token)));
 
         assertEq(token.balanceOf(address(multisigVault)), token.totalSupply());
+
+        assertEq(token.totalSupply(), 10_000_000e18);
+
+        assertEq(token.owner(), multisig);
+
+        assertEq(multisigVault.owner(), multisig);
+
+        assertFalse(multisigVault.paused());
     }
 }

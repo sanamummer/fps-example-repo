@@ -19,9 +19,12 @@ contract TimelockProposal_02 is TimelockProposal {
         primaryForkId = vm.createFork("sepolia");
         vm.selectFork(primaryForkId);
 
-        timelock = ITimelockController(
-            addresses.getAddress("PROTOCOL_TIMELOCK")
-        );
+        setAddresses(new Addresses(
+            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
+        ));
+        vm.makePersistent(address(addresses));
+
+        setTimelock(addresses.getAddress("PROTOCOL_TIMELOCK"));
 
         super.run();
     }
@@ -59,5 +62,7 @@ contract TimelockProposal_02 is TimelockProposal {
             address(timelock)
         );
         assertEq(amount, 0);
+
+        assertEq(token.balanceOf(address(timelock)), 10_000_000e18);
     }
 }

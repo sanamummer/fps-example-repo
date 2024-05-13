@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {GovernorBravoProposal} from "@forge-proposal-simulator/src/proposals/GovernorBravoProposal.sol";
-import {IGovernorAlpha} from "@forge-proposal-simulator/src/interface/IGovernorBravo.sol";
+import {IGovernorBravo} from "@forge-proposal-simulator/src/interface/IGovernorBravo.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {Vault} from "mocks/Vault.sol";
 import {Token} from "mocks/Token.sol";
@@ -20,12 +20,12 @@ contract BravoProposal_02 is GovernorBravoProposal {
         primaryForkId = vm.createFork("sepolia");
         vm.selectFork(primaryForkId);
 
-        addresses = new Addresses(
+        setAddresses(new Addresses(
             vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        );
+        ));
         vm.makePersistent(address(addresses));
 
-        governor = IGovernorAlpha(addresses.getAddress("PROTOCOL_GOVERNOR"));
+        setGovernor(addresses.getAddress("PROTOCOL_GOVERNOR"));
 
         super.run();
     }
@@ -49,10 +49,6 @@ contract BravoProposal_02 is GovernorBravoProposal {
         bravoVault.withdraw(token, timelock, amount);
     }
 
-    function simulate() public override {        
-        _simulateActions();
-    }
-    // todo: check that vault receives the amount
     function validate() public override {
         Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         Token token = Token(addresses.getAddress("BRAVO_VAULT_TOKEN"));
@@ -67,5 +63,7 @@ contract BravoProposal_02 is GovernorBravoProposal {
             address(timelock)
         );
         assertEq(amount, 0);
+
+        assertEq(token.balanceOf(address(timelock)), 10_000_000e18);
     }
 }
