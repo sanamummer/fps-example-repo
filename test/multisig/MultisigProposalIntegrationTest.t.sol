@@ -7,7 +7,7 @@ import {MultisigPostProposalCheck} from "./MultisigPostProposalCheck.sol";
 // @dev This test contract inherits MultisigPostProposalCheck, granting it
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
-contract MultisigProposal01IntegrationTest is MultisigPostProposalCheck {
+contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
     // Tests adding a token to the whitelist in the Vault contract
     function test_addTokenToWhitelist() public {
         // Retrieves the Vault instance using its address from the Addresses contract
