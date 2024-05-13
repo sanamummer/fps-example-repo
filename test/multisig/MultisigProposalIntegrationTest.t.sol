@@ -36,18 +36,22 @@ contract MultisigProposalIntegrationTest is MultisigPostProposalCheck {
         // Retrieves the address of the token to be deposited
         address token = addresses.getAddress("MULTISIG_TOKEN");
 
+        (uint256 prevDeposits,) = multisigVault.deposits(address(token), multisig);
+
+        uint256 depositAmount = 100;
+
         // Starts a prank session with the multisig address as the caller
         vm.startPrank(multisig);
         // Mints 100 tokens to the multisig contract's address
-        Token(token).mint(multisig, 100);
-        // Approves the Vault to spend 100 tokens
-        Token(token).approve(address(multisigVault), 100);
-        // Deposits 100 tokens into the Vault
-        multisigVault.deposit(address(token), 100);
+        Token(token).mint(multisig, depositAmount);
+        // Approves the Vault to spend depositAmount tokens
+        Token(token).approve(address(multisigVault), depositAmount);
+        // Deposits depositAmount tokens into the Vault
+        multisigVault.deposit(address(token), depositAmount);
 
         // Retrieves the deposit amount of the token in the Vault for the multisig address
         (uint256 amount,) = multisigVault.deposits(address(token), multisig);
-        // Asserts that the deposit amount is equal to 1e25 + 100
-        assertTrue(amount == 1e25 + 100, "Token should be deposited");
+        // Asserts that the deposit amount is equal to previous deposit + depositAmount
+        assertTrue(amount == prevDeposits + depositAmount, "Token should be deposited");
     }
 }

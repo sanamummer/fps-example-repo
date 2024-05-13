@@ -25,12 +25,15 @@ contract TimelockProposalIntegrationTest is TimelockPostProposalCheck {
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");
         address token = addresses.getAddress("TIMELOCK_TOKEN");
 
+        (uint256 prevDeposits,) = timelockVault.deposits(address(token), timelock);
+        uint256 depositAmount = 100;
+
         vm.startPrank(timelock);
-        Token(token).mint(timelock, 100);
-        Token(token).approve(address(timelockVault), 100);
-        timelockVault.deposit(address(token), 100);
+        Token(token).mint(timelock, depositAmount);
+        Token(token).approve(address(timelockVault), depositAmount);
+        timelockVault.deposit(address(token), depositAmount);
 
         (uint256 amount,) = timelockVault.deposits(address(token), timelock);
-        assertTrue(amount == 1e25 + 100, "Token should be deposited");
+        assertTrue(amount == prevDeposits + depositAmount, "Token should be deposited");
     }
 }

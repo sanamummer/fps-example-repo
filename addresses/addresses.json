@@ -43,27 +43,15 @@
         "name": "PROTOCOL_GOVERNOR_ALPHA"
     },
     {
-        "addr": "0x7D26D5978cD4617C6c7a02C75a42927eF52f405C",
+        "addr": "0x840E5b403CD3261c0582251c6F8d2895c9d288cb", 
         "chainId": 11155111,
-        "isContract": true,
-        "name": "TIMELOCK_VAULT"
+        "isContract": true ,
+        "name": "MULTISIG_VAULT"
     },
     {
-        "addr": "0x861bB12491F453F48fE1A05e9C034588de638262",
+        "addr": "0x97484D38B8997d65a48e3B9922c3b929a0c904D1", 
         "chainId": 11155111,
-        "isContract": true,
-        "name": "TIMELOCK_TOKEN"
-    },
-    {
-        "addr": "0x0CB10d561C2a273AFBB81E535738BA3095E9dCF2",
-        "chainId": 11155111,
-        "isContract": true,
-        "name": "BRAVO_VAULT"
-    },
-    {
-        "addr": "0x76126BDFC0893d9A27336b93824778432cA60808",
-        "chainId": 11155111,
-        "isContract": true,
-        "name": "BRAVO_VAULT_TOKEN"
+        "isContract": true ,
+        "name": "MULTISIG_TOKEN"
     }
 ]

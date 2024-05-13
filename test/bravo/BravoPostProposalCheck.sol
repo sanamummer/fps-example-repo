@@ -12,7 +12,7 @@ contract BravoPostProposalCheck is Test {
 
     function setUp() public {
         string[] memory inputs = new string[](2);
-        inputs[0] = "./get-latest-base-proposal.sh";
+        inputs[0] = "./get-latest-proposal.sh";
         inputs[1] = "BravoProposal";
 
         string memory output = string(vm.ffi(inputs));

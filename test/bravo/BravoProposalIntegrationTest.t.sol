@@ -24,14 +24,15 @@ contract BravoProposalIntegrationTest is BravoPostProposalCheck {
         Vault governorVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
         address token = addresses.getAddress("BRAVO_VAULT_TOKEN");
+        (uint256 prevDeposit,) = governorVault.deposits(token, timelock);
+        uint256 depositAmount = 100;
 
         vm.startPrank(timelock);
-        // todo: add variable instead of 100
-        Token(token).mint(timelock, 100);
-        Token(token).approve(address(governorVault), 100);
-        governorVault.deposit(address(token), 100);
+        Token(token).mint(timelock, depositAmount);
+        Token(token).approve(address(governorVault), depositAmount);
+        governorVault.deposit(address(token), depositAmount);
 
         (uint256 amount,) = governorVault.deposits(token, timelock);
-        assertTrue(amount == (1e25 + 100), "Token should be deposited");
+        assertTrue(amount == (prevDeposit + depositAmount), "Token should be deposited");
     }
 }
