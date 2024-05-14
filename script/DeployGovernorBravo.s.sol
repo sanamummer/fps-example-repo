@@ -32,8 +32,8 @@ contract DeployGovernorBravo is Script {
             address(govToken), // governance token
             msg.sender, // admin
             address(implementation), // implementation
-            10_000, // voting period
-            10_000, // voting delay
+            60, // voting period
+            1, // voting delay
             1e21 // proposal threshold
         );
 
