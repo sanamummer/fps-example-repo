@@ -13,19 +13,19 @@
         "isContract": false
     },
     {
-        "addr": "0xa1C3Cb988F4F75fe994E6c4B9a15e8C4C444a32b",
+        "addr": "0xF5038C4dEd92fa2de0619C063FaEa30f81fca7bd",
         "chainId": 11155111,
         "isContract": true,
         "name": "PROTOCOL_GOVERNOR"
     },
     {
-        "addr": "0x9C41780C184ba1b1E48E201610Dca3dD24A9323D",
+        "addr": "0xF75C465c091bDcb9D28A767AaC44d4aAFa4b7Af1",
         "chainId": 11155111,
         "isContract": true,
         "name": "PROTOCOL_TIMELOCK_BRAVO"
     },
     {
-        "addr": "0xA98deC0C8e0326756C956033bbF091081986d0eD",
+        "addr": "0x975064432C9b921799505b28375B56da8128b4e3",
         "chainId": 11155111,
         "isContract": true,
         "name": "PROTOCOL_GOVERNANCE_TOKEN"
@@ -37,7 +37,7 @@
         "name": "PROTOCOL_TIMELOCK"
     },
     {
-        "addr": "0x3dEdfE55f516FF41f89f85e460733D7d6b265d33",
+        "addr": "0x384bB45B49a461644A9A362fbb75f68729bF34E6",
         "chainId": 11155111,
         "isContract": true,
         "name": "PROTOCOL_GOVERNOR_ALPHA"
