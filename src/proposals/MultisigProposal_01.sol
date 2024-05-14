@@ -17,7 +17,7 @@ contract MultisigProposal_01 is MultisigProposal {
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
 
-        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))));
+        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))));
         vm.makePersistent(address(addresses));
 
         super.run();
