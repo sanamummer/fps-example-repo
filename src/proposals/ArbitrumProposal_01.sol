@@ -28,7 +28,7 @@ contract ProxyUpgradeAction {
     }
 }
 
-contract ArbitrumProposal01 is ArbitrumProposal {
+contract ArbitrumProposal_01 is ArbitrumProposal {
     constructor() {
         executionChain = ProposalExecutionChain.ARB_ONE;
     }

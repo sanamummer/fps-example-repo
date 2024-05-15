@@ -76,5 +76,71 @@
         "chainId": 11155111,
         "isContract": true,
         "name": "TIMELOCK_TOKEN"
+    },
+    {
+        "addr": "0xE6841D92B0C345144506576eC13ECf5103aC7f49",
+        "chainId": 1,
+        "name": "ARBITRUM_L1_TIMELOCK",
+        "isContract": true
+    },
+    {
+        "addr": "0x3ffFbAdAF827559da092217e474760E2b2c3CeDd",
+        "chainId": 1,
+        "name": "ARBITRUM_L1_UPGRADE_EXECUTOR",
+        "isContract": true
+    },
+    {
+        "addr": "0x9aD46fac0Cf7f790E5be05A0F15223935A0c0aDa",
+        "chainId": 1,
+        "name": "ARBITRUM_L1_PROXY_ADMIN",
+        "isContract": true
+    },
+    {
+        "addr": "0xd92023e9d9911199a6711321d1277285e6d4e2db",
+        "chainId": 1,
+        "name": "ARBITRUM_L1_WETH_GATEWAY_PROXY",
+        "isContract": true
+    },
+    {
+        "addr": "0x8315177aB297bA92A06054cE80a67Ed4DBd7ed3a",
+        "chainId": 1,
+        "name": "ARBITRUM_BRIDGE",
+        "isContract": true
+    },
+    {
+        "addr": "0x34d45e99f7D8c45ed05B5cA72D54bbD1fb3F98f0",
+        "chainId": 42161,
+        "name": "ARBITRUM_L2_TIMELOCK",
+        "isContract": true
+    },
+    {
+        "addr": "0xCF57572261c7c2BCF21ffD220ea7d1a27D40A827",
+        "chainId": 42161,
+        "name": "ARBITRUM_L2_UPGRADE_EXECUTOR",
+        "isContract": true
+    },
+    {
+        "addr": "0xdb216562328215E010F819B5aBe947bad4ca961e",
+        "chainId": 42161,
+        "name": "ARBITRUM_L2_PROXY_ADMIN",
+        "isContract": true
+    },
+    {
+        "addr": "0x6c411aD3E74De3E7Bd422b94A27770f5B86C623B",
+        "chainId": 42161,
+        "name": "ARBITRUM_L2_WETH_GATEWAY_PROXY",
+        "isContract": true
+    },
+    {
+        "addr": "0xf07DeD9dC292157749B6Fd268E37DF6EA38395B9",
+        "chainId": 42161,
+        "name": "ARBITRUM_L2_CORE_GOVERNOR",
+        "isContract": true
+    },
+    {
+        "addr": "0x2c9c0F10E3F8820544522df210dFb0A2BbC75147",
+        "name": "DEPLOYER_EOA",
+        "chainId": 42161,
+        "isContract": false
     }
 ]
