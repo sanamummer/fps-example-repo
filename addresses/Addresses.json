@@ -1,0 +1,81 @@
+
+[
+    {
+        "addr": "0x1c1A8861139C0126176bD1B0d01Bbf5E4c99591b",
+        "name": "DEV_MULTISIG",
+        "chainId": 11155111,
+        "isContract": true
+    },
+    {
+        "addr": "0x2c9c0F10E3F8820544522df210dFb0A2BbC75147",
+        "name": "DEPLOYER_EOA",
+        "chainId": 11155111,
+        "isContract": false
+    },
+    {
+        "addr": "0xF5038C4dEd92fa2de0619C063FaEa30f81fca7bd",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_GOVERNOR"
+    },
+    {
+        "addr": "0xF75C465c091bDcb9D28A767AaC44d4aAFa4b7Af1",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_TIMELOCK_BRAVO"
+    },
+    {
+        "addr": "0x975064432C9b921799505b28375B56da8128b4e3",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_GOVERNANCE_TOKEN"
+    },
+    {
+        "addr": "0xFAb1fCA6DE9BEc87AD88cE70d1b5356aaf0f5E74",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_TIMELOCK"
+    },
+    {
+        "addr": "0x384bB45B49a461644A9A362fbb75f68729bF34E6",
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "PROTOCOL_GOVERNOR_ALPHA"
+    },
+    {
+        "addr": "0x840E5b403CD3261c0582251c6F8d2895c9d288cb", 
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "MULTISIG_VAULT"
+    },
+    {
+        "addr": "0x97484D38B8997d65a48e3B9922c3b929a0c904D1", 
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "MULTISIG_TOKEN"
+    },
+    {
+        "addr": "0x8eF4DbBaE34B02330491795f76d6544b5e8fE5e1", 
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "BRAVO_VAULT"
+    },
+    {
+        "addr": "0xffC112cd15708A68eED64A2ac6ef558a05441C0B", 
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "BRAVO_VAULT_TOKEN"
+    },
+    {
+        "addr": "0x4EA6B9Ca1dF152FAfE332eb0D1d75da51A221E1b", 
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "TIMELOCK_VAULT"
+    },
+    {
+        "addr": "0xb320B8A7828d6070D41bC4991d7151DBBC32E5D4", 
+        "chainId": 11155111,
+        "isContract": true,
+        "name": "TIMELOCK_TOKEN"
+    }
+]

@@ -1,3 +1,4 @@
 @forge-proposal-simulator=lib/forge-proposal-simulator/
 @openzeppelin=lib/openzeppelin-contracts/contracts
 @forge-std/=lib/forge-std/src/
+@comp-governance=lib/compound-governance/contracts
