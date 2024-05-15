@@ -17,7 +17,9 @@ contract TimelockPostProposalCheck is Test {
 
         string memory output = string(vm.ffi(inputs));
 
-        TimelockProposal timelockProposal = TimelockProposal(deployCode(output));
+        TimelockProposal timelockProposal = TimelockProposal(
+            deployCode(output)
+        );
         vm.makePersistent(address(timelockProposal));
 
         // Execute proposals

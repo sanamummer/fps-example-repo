@@ -1,4 +1,3 @@
-
 [
     {
         "addr": "0x1c1A8861139C0126176bD1B0d01Bbf5E4c99591b",
@@ -43,37 +42,37 @@
         "name": "PROTOCOL_GOVERNOR_ALPHA"
     },
     {
-        "addr": "0x840E5b403CD3261c0582251c6F8d2895c9d288cb", 
+        "addr": "0x840E5b403CD3261c0582251c6F8d2895c9d288cb",
         "chainId": 11155111,
         "isContract": true,
         "name": "MULTISIG_VAULT"
     },
     {
-        "addr": "0x97484D38B8997d65a48e3B9922c3b929a0c904D1", 
+        "addr": "0x97484D38B8997d65a48e3B9922c3b929a0c904D1",
         "chainId": 11155111,
         "isContract": true,
         "name": "MULTISIG_TOKEN"
     },
     {
-        "addr": "0x8eF4DbBaE34B02330491795f76d6544b5e8fE5e1", 
+        "addr": "0x8eF4DbBaE34B02330491795f76d6544b5e8fE5e1",
         "chainId": 11155111,
         "isContract": true,
         "name": "BRAVO_VAULT"
     },
     {
-        "addr": "0xffC112cd15708A68eED64A2ac6ef558a05441C0B", 
+        "addr": "0xffC112cd15708A68eED64A2ac6ef558a05441C0B",
         "chainId": 11155111,
         "isContract": true,
         "name": "BRAVO_VAULT_TOKEN"
     },
     {
-        "addr": "0x4EA6B9Ca1dF152FAfE332eb0D1d75da51A221E1b", 
+        "addr": "0x4EA6B9Ca1dF152FAfE332eb0D1d75da51A221E1b",
         "chainId": 11155111,
         "isContract": true,
         "name": "TIMELOCK_VAULT"
     },
     {
-        "addr": "0xb320B8A7828d6070D41bC4991d7151DBBC32E5D4", 
+        "addr": "0xb320B8A7828d6070D41bC4991d7151DBBC32E5D4",
         "chainId": 11155111,
         "isContract": true,
         "name": "TIMELOCK_TOKEN"

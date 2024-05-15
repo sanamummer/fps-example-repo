@@ -17,7 +17,11 @@ contract MultisigProposal_01 is MultisigProposal {
     function run() public override {
         primaryForkId = vm.createFork("sepolia");
 
-        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))));
+        setAddresses(
+            new Addresses(
+                vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))
+            )
+        );
         vm.makePersistent(address(addresses));
 
         super.run();
@@ -28,7 +32,11 @@ contract MultisigProposal_01 is MultisigProposal {
         if (!addresses.isAddressSet("MULTISIG_VAULT")) {
             Vault multisigVault = new Vault();
 
-            addresses.addAddress("MULTISIG_VAULT", address(multisigVault), true);
+            addresses.addAddress(
+                "MULTISIG_VAULT",
+                address(multisigVault),
+                true
+            );
 
             multisigVault.transferOwnership(multisig);
         }
@@ -48,7 +56,11 @@ contract MultisigProposal_01 is MultisigProposal {
         }
     }
 
-    function build() public override buildModifier(addresses.getAddress("DEV_MULTISIG")) {
+    function build()
+        public
+        override
+        buildModifier(addresses.getAddress("DEV_MULTISIG"))
+    {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         /// STATICCALL -- not recorded for the run stage
@@ -75,7 +87,7 @@ contract MultisigProposal_01 is MultisigProposal {
         address multisig = addresses.getAddress("DEV_MULTISIG");
 
         uint256 balance = token.balanceOf(address(multisigVault));
-        (uint256 amount,) = multisigVault.deposits(address(token), multisig);
+        (uint256 amount, ) = multisigVault.deposits(address(token), multisig);
         assertEq(amount, balance);
 
         assertTrue(multisigVault.tokenWhitelist(address(token)));

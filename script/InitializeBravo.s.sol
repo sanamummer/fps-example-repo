@@ -14,7 +14,9 @@ contract DeployGovernorBravo is Script {
 
         address governor = addresses.getAddress("PROTOCOL_GOVERNOR");
 
-        address payable timelock = payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"));
+        address payable timelock = payable(
+            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
+        );
 
         vm.startBroadcast();
 
@@ -22,7 +24,14 @@ contract DeployGovernorBravo is Script {
         address govAlpha = address(new MockGovernorAlpha());
 
         Timelock(timelock).executeTransaction(
-            timelock, 0, "", abi.encodeWithSignature("setPendingAdmin(address)", address(governor)), vm.envUint("ETA")
+            timelock,
+            0,
+            "",
+            abi.encodeWithSignature(
+                "setPendingAdmin(address)",
+                address(governor)
+            ),
+            vm.envUint("ETA")
         );
 
         // Initialize GovernorBravo
