@@ -120,7 +120,7 @@
         "isContract": true
     },
     {
-        "addr": "0xdb216562328215E010F819B5aBe947bad4ca961e",
+        "addr": "0xd570aCE65C43af47101fC6250FD6fC63D1c22a86",
         "chainId": 42161,
         "name": "ARBITRUM_L2_PROXY_ADMIN",
         "isContract": true
@@ -136,6 +136,18 @@
         "chainId": 42161,
         "name": "ARBITRUM_L2_CORE_GOVERNOR",
         "isContract": true
+    },
+    {
+        "addr": "0x0000000000000000000000000000000000000064",
+        "chainId": 42161,
+        "name": "ARBITRUM_SYS",
+        "isContract": true
+    },
+    {
+        "addr": "0xf7951d92b0c345144506576ec13ecf5103ac905a",
+        "chainId": 42161,
+        "name": "ARBITRUM_ALIASED_L1_TIMELOCK",
+        "isContract": false
     },
     {
         "addr": "0x2c9c0F10E3F8820544522df210dFb0A2BbC75147",

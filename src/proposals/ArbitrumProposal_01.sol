@@ -74,7 +74,7 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
     function build()
         public
         override
-        buildModifier(addresses.getAddress("ARBITRUM_L2_TIMELOCK"))
+        buildModifier(addresses.getAddress("ARBITRUM_ALIASED_L1_TIMELOCK"))
     {
         IUpgradeExecutor upgradeExecutor = IUpgradeExecutor(
             addresses.getAddress("ARBITRUM_L2_UPGRADE_EXECUTOR")

@@ -24,6 +24,7 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
     /// @notice Arbitrum proposals should have a single action
     function _validateActions() internal view override {
         uint256 actionsLength = actions.length;
+
         require(
             actionsLength == 1,
             "Arbitrum proposals must have a single action"
