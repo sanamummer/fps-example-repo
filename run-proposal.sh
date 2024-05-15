@@ -8,14 +8,14 @@ FOLDER=$PROPOSALS_FOLDER
 if [[ ! -z "$CHANGED_FILES" ]]; then
     IFS=' ' read -r -a files_array <<< "$CHANGED_FILES"
 
-      # Initialize an empty array to hold numbers and corresponding file names
+    # Initialize an empty array to hold numbers and corresponding file names
     max_number=-1
     selected_file=""
 
     for file in "${files_array[@]}"; do
-        if [[ $file == "$FOLDER"/*.sol && $file != *"/examples/"* ]]; then
+        if [[ $file == "$FOLDER"/*.sol ]]; then
 
-            # Extract the number following 'm', 'b', or 't' before '.sol'
+            # Extract the number following 'Proposal_' before '.sol'
             number=$(echo $file | sed -E 's/.*Proposal_([0-9]+)\.sol/\1/')
 
             # Check if a number was actually found; if not, skip this file
