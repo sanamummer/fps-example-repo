@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
-import {Vault} from "mocks/Vault.sol";
-import {Token} from "mocks/Token.sol";
+import {Vault} from "src/mocks/Vault.sol";
+import {Token} from "src/mocks/Token.sol";
 import {TimelockPostProposalCheck} from "./TimelockPostProposalCheck.sol";
 
 // @dev This test contract extends TimelockPostProposalCheck, granting it

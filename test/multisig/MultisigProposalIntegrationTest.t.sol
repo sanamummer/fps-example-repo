@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
-import {Vault} from "mocks/Vault.sol";
-import {Token} from "mocks/Token.sol";
+import {Vault} from "src/mocks/Vault.sol";
+import {Token} from "src/mocks/Token.sol";
 import {MultisigPostProposalCheck} from "./MultisigPostProposalCheck.sol";
 
 // @dev This test contract inherits MultisigPostProposalCheck, granting it

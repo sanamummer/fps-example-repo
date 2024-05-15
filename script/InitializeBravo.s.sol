@@ -4,9 +4,9 @@ import "@forge-std/Script.sol";
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
-import {MockGovernorAlpha} from "mocks/MockGovernorAlpha.sol";
-import {Timelock} from "mocks/bravo/Timelock.sol";
-import {GovernorBravoDelegate} from "mocks/bravo/GovernorBravoDelegate.sol";
+import {MockGovernorAlpha} from "src/mocks/MockGovernorAlpha.sol";
+import {Timelock} from "src/mocks/bravo/Timelock.sol";
+import {GovernorBravoDelegate} from "src/mocks/bravo/GovernorBravoDelegate.sol";
 
 contract DeployGovernorBravo is Script {
     function run() public virtual {
