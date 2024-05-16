@@ -19,7 +19,7 @@ interface IUpgradeExecutor {
 
 /// @title ArbitrumProposal_02
 /// @notice This is a example proposal that upgrades the L1 weth gateway
-contract ArbitrumProposal_01 is ArbitrumProposal {
+contract ArbitrumProposal_02 is ArbitrumProposal {
     constructor() {
         executionChain = ProposalExecutionChain.ETH;
     }
