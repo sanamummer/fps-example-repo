@@ -1,10 +1,9 @@
-name: "Arbitrum Integration Tests"
+name: "Sepolia Integration Tests"
 
 on: [pull_request]
 
 env:
     FOUNDRY_PROFILE: ci
-    ARB_RPC_URL: "https://arbitrum.drpc.org	"
 
 jobs:
     check:
@@ -31,5 +30,5 @@ jobs:
 
             - name: Run Forge tests
               run: |
-                  forge test -vvv --ffi --mc Arbitrum
+                  forge test -vvv --ffi --mc Sepolia
               id: test
