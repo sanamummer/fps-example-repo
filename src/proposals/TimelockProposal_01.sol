@@ -1,7 +1,6 @@
 pragma solidity ^0.8.0;
 
 import {TimelockProposal} from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
-import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {Vault} from "src/mocks/Vault.sol";
 import {Token} from "src/mocks/Token.sol";

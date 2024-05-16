@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 /// @title MockArbSys
 /// @notice a mocked version of the Arbitrum pre-compiled system contract, add additional methods as needed
 contract MockArbSys {
-    uint256 ticketId;
+    uint256 public ticketId;
 
     function sendTxToL1(
         address _l1Target,

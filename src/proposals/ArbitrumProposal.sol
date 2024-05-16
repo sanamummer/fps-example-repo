@@ -4,12 +4,8 @@ pragma solidity ^0.8.0;
 import {Vm} from "@forge-std/Vm.sol";
 import {console} from "@forge-std/console.sol";
 
-import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {GovernorOZProposal} from "@forge-proposal-simulator/src/proposals/GovernorOZProposal.sol";
 import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
-import {IProxy} from "@forge-proposal-simulator/src/interface/IProxy.sol";
-import {IGovernor, IGovernorTimelockControl, IGovernorVotes} from "@forge-proposal-simulator/src/interface/IGovernor.sol";
-import {IProxyAdmin} from "@forge-proposal-simulator/src/interface/IProxyAdmin.sol";
 import {Address} from "@forge-proposal-simulator/utils/Address.sol";
 
 import {MockArbSys} from "../mocks/MockArbSys.sol";

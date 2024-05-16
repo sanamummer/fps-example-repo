@@ -4,7 +4,6 @@ import {MultisigProposal} from "@forge-proposal-simulator/src/proposals/Multisig
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {Vault} from "src/mocks/Vault.sol";
 import {Token} from "src/mocks/Token.sol";
-import {console} from "@forge-std/console.sol";
 
 contract MultisigProposal_02 is MultisigProposal {
     function name() public pure override returns (string memory) {

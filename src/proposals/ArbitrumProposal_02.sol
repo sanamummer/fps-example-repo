@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import {IProxy} from "@forge-proposal-simulator/src/interface/IProxy.sol";
-import {IGovernor, IGovernorTimelockControl, IGovernorVotes} from "@forge-proposal-simulator/src/interface/IGovernor.sol";
 import {MockUpgrade} from "@forge-proposal-simulator/mocks/MockUpgrade.sol";
 
 import {Addresses} from "@addresses/Addresses.sol";
