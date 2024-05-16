@@ -238,10 +238,10 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
             // If is a retriable ticket, we need to execute on L2
             if (target == RETRYABLE_TICKET_MAGIC) {
                 // entries index 2 is TxToL2
-            // topic with index 2 is the l2 target address
-            address to = address(uint160(uint256(entries[2].topics[2])));
+                // topic with index 2 is the l2 target address
+                address to = address(uint160(uint256(entries[2].topics[2])));
 
-            bytes memory l2Calldata = abi.decode(entries[2].data, (bytes));
+                bytes memory l2Calldata = abi.decode(entries[2].data, (bytes));
 
                 // Switch back to primary fork, must be either Arb One or Arb Nova
                 vm.selectFork(primaryForkId);

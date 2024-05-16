@@ -11,6 +11,7 @@ contract ArbitrumPostProposalCheck is Test {
     Addresses internal addresses;
 
     function setUp() public {}
+
     function test_setUp() public {
         string[] memory inputs = new string[](2);
         inputs[0] = "./get-latest-proposal.sh";

@@ -99,7 +99,7 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
 
     function validate() public override {
         vm.selectFork(ethForkId);
-        
+
         IProxy proxy = IProxy(
             addresses.getAddress("ARBITRUM_L1_WETH_GATEWAY_PROXY")
         );
