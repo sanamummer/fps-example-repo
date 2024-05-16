@@ -154,5 +154,11 @@
         "name": "DEPLOYER_EOA",
         "chainId": 42161,
         "isContract": false
+    },
+    {
+        "addr": "0x2c9c0F10E3F8820544522df210dFb0A2BbC75147",
+        "name": "DEPLOYER_EOA",
+        "chainId": 1,
+        "isContract": false
     }
-]
+  ]

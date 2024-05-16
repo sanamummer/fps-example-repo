@@ -42,9 +42,13 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
 
         setEthForkId(vm.createFork("ethereum"));
 
+        /// select arbitrum fork to set governor address
         vm.selectFork(primaryForkId);
 
         setGovernor(addresses.getAddress("ARBITRUM_L2_CORE_GOVERNOR"));
+
+        /// it must start on mainnet to deploy contracts on deploy function
+        vm.selectFork(ethForkId);
 
         super.run();
     }
@@ -64,6 +68,7 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
 
         if (!addresses.isAddressSet("PROXY_UPGRADE_ACTION")) {
             address gac = address(new MockProxyUpgradeAction());
+
             addresses.addAddress("PROXY_UPGRADE_ACTION", gac, true);
         }
     }
@@ -71,8 +76,10 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
     function build()
         public
         override
-        buildModifier(addresses.getAddress("ARBITRUM_ALIASED_L1_TIMELOCK"))
+        buildModifier(addresses.getAddress("ARBITRUM_L1_TIMELOCK", 1))
     {
+        vm.selectFork(ethForkId);
+
         IUpgradeExecutor upgradeExecutor = IUpgradeExecutor(
             addresses.getAddress("ARBITRUM_L1_UPGRADE_EXECUTOR")
         );
@@ -86,9 +93,13 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
                 addresses.getAddress("ARBITRUM_L1_WETH_GATEWAY_IMPLEMENTATION")
             )
         );
+
+        vm.selectFork(primaryForkId);
     }
 
     function validate() public override {
+        vm.selectFork(ethForkId);
+        
         IProxy proxy = IProxy(
             addresses.getAddress("ARBITRUM_L1_WETH_GATEWAY_PROXY")
         );
@@ -100,6 +111,9 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
                 addresses.getAddress("ARBITRUM_L1_WETH_GATEWAY_IMPLEMENTATION"),
             "Proxy implementation not set"
         );
+
         vm.stopPrank();
+
+        vm.selectFork(primaryForkId);
     }
 }

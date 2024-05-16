@@ -51,11 +51,6 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
     /// @notice mock arb sys precompiled contract on L2
     ///         mock outbox on mainnet
     function afterDeployMock() public override {
-        address arbsys = address(new MockArbSys());
-        vm.makePersistent(arbsys);
-
-        vm.etch(addresses.getAddress("ARBITRUM_SYS"), address(arbsys).code);
-
         // switch to mainnet fork to mock arb outbox
         vm.selectFork(ethForkId);
         address mockOutbox = address(new MockArbOutbox());
@@ -67,6 +62,11 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         );
 
         vm.selectFork(primaryForkId);
+
+        address arbsys = address(new MockArbSys());
+        vm.makePersistent(arbsys);
+
+        vm.etch(addresses.getAddress("ARBITRUM_SYS"), address(arbsys).code);
     }
 
     /// @notice Arbitrum proposals should have a single action
@@ -235,14 +235,14 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
             // Stop recording logs
             Vm.Log[] memory entries = vm.getRecordedLogs();
 
-            // entries index 2 is TxToL2
+            // If is a retriable ticket, we need to execute on L2
+            if (target == RETRYABLE_TICKET_MAGIC) {
+                // entries index 2 is TxToL2
             // topic with index 2 is the l2 target address
             address to = address(uint160(uint256(entries[2].topics[2])));
 
             bytes memory l2Calldata = abi.decode(entries[2].data, (bytes));
 
-            // If is a retriable ticket, we need to execute on L2
-            if (target == RETRYABLE_TICKET_MAGIC) {
                 // Switch back to primary fork, must be either Arb One or Arb Nova
                 vm.selectFork(primaryForkId);
 

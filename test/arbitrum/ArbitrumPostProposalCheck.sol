@@ -10,7 +10,8 @@ import {ArbitrumProposal} from "src/proposals/ArbitrumProposal.sol";
 contract ArbitrumPostProposalCheck is Test {
     Addresses internal addresses;
 
-    function setUp() public {
+    function setUp() public {}
+    function test_setUp() public {
         string[] memory inputs = new string[](2);
         inputs[0] = "./get-latest-proposal.sh";
         inputs[1] = "ArbitrumProposal";
