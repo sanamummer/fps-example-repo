@@ -6,5 +6,6 @@ import {ArbitrumPostProposalCheck} from "./ArbitrumPostProposalCheck.sol";
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
 contract ArbitrumIntegrationTest is ArbitrumPostProposalCheck {
-    function test_withdraw_weth() public {}
+    /// The test is empty as the mock proposals upgrade the WETH gateway implementation to an empty contract. In a real scenario, Arbitrum would have multiple integration test contracts that would test the entire system after simulating the execution of a proposal.
+    function test_finalizeInboundTransfer() public {}
 }
