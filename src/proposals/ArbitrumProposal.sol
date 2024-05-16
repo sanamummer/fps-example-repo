@@ -208,6 +208,8 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
             vm.warp(block.timestamp + minDelay);
         }
 
+        vm.stopPrank();
+
         {
             // Start recording logs so we can get the TxToL2 log data
             vm.recordLogs();
@@ -236,6 +238,7 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
                 vm.selectFork(primaryForkId);
 
                 // Perform the low-level call
+                vm.prank(addresses.getAddress("ARBITRUM_ALIASED_L1_TIMELOCK"));
                 bytes memory returndata = to.functionCall(l2Calldata);
 
                 if (DEBUG && returndata.length > 0) {
