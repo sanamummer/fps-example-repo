@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 
 import {Vm} from "@forge-std/Vm.sol";
+import {console} from "@forge-std/console.sol";
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 import {GovernorOZProposal} from "@forge-proposal-simulator/src/proposals/GovernorOZProposal.sol";
-
 import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import {IProxy} from "@forge-proposal-simulator/src/interface/IProxy.sol";
 import {IGovernor, IGovernorTimelockControl, IGovernorVotes} from "@forge-proposal-simulator/src/interface/IGovernor.sol";
@@ -37,7 +37,8 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         ethForkId = _forkId;
     }
 
-    /// @notice mock arb sys precompiled contract
+    /// @notice mock arb sys precompiled contract on L2
+    ///         mock outbox on mainnet
     function afterDeployMock() public override {
         address arbsys = address(new MockArbSys());
         vm.makePersistent(arbsys);
@@ -177,40 +178,71 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
             "ARBITRUM_L1_TIMELOCK"
         );
 
-        // Start recording logs so we can create the execute calldata
-        vm.recordLogs();
+        ITimelockController timelock = ITimelockController(l1TimelockAddress);
 
-        // Call the schedule function on the L1 timelock
-        l1TimelockAddress.functionCall(scheduleCalldata);
+        address target;
+        uint256 value;
+        bytes memory data;
+        bytes32 predecessor;
 
-        // Stop recording logs
-        Vm.Log[] memory entries = vm.getRecordedLogs();
+        {
+            // Start recording logs so we can create the execute calldata using the
+            // CallSchedule log data
+            vm.recordLogs();
 
-        // Get the execute parameters from schedule call logs
-        (
-            address target,
-            uint256 value,
-            bytes memory data,
-            bytes32 predecessor,
+            // Call the schedule function on the L1 timelock
+            l1TimelockAddress.functionCall(scheduleCalldata);
 
-        ) = abi.decode(
+            // Stop recording logs
+            Vm.Log[] memory entries = vm.getRecordedLogs();
+
+            // Get the execute parameters from schedule call logs
+            (target, value, data, predecessor, ) = abi.decode(
                 entries[0].data,
                 (address, uint256, bytes, bytes32, uint256)
             );
 
-        // warp to the future to execute the proposal
-        ITimelockController timelock = ITimelockController(l1TimelockAddress);
-        uint256 minDelay = timelock.getMinDelay();
+            // warp to the future to execute the proposal
+            uint256 minDelay = timelock.getMinDelay();
 
-        vm.warp(block.timestamp + minDelay);
+            vm.warp(block.timestamp + minDelay);
+        }
 
-        // execute the proposal
-        timelock.execute(
-            target,
-            value,
-            data,
-            predecessor,
-            keccak256(abi.encodePacked(description()))
-        );
+        {
+            // Start recording logs so we can get the TxToL2 log data
+            vm.recordLogs();
+
+            // execute the proposal
+            timelock.execute(
+                target,
+                value,
+                data,
+                predecessor,
+                keccak256(abi.encodePacked(description()))
+            );
+
+            // Stop recording logs
+            Vm.Log[] memory entries = vm.getRecordedLogs();
+
+            // entries index 2 is TxToL2
+            // topic with index 2 is the l2 target address
+            address to = address(uint160(uint256(entries[2].topics[2])));
+
+            bytes memory l2Calldata = abi.decode(entries[2].data, (bytes));
+
+            // If is a retriable ticket, we need to execute on L2
+            if (target == RETRYABLE_TICKET_MAGIC) {
+                // Switch back to primary fork, must be either Arb One or Arb Nova
+                vm.selectFork(primaryForkId);
+
+                // Perform the low-level call
+                bytes memory returndata = to.functionCall(l2Calldata);
+
+                if (DEBUG && returndata.length > 0) {
+                    console.log("Target %s called on L2 and returned:", to);
+                    console.logBytes(returndata);
+                }
+            }
+        }
     }
 }
