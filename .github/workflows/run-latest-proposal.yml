@@ -2,6 +2,7 @@ name: "Run Latest Proposal"
 
 env:
     FOUNDRY_PROFILE: "ci"
+    ARB_RPC_URL: "https://arbitrum.drpc.org"
 
 on: [pull_request]
 
@@ -59,7 +60,7 @@ jobs:
 
             - name: Run Proposal
               run: ./run-proposal.sh
-                
+
             - name: Comment PR with Proposal Output
               uses: actions/github-script@v6
               with:
