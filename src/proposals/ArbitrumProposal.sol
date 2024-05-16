@@ -92,6 +92,8 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         }
     }
 
+    /// @notice get the calldata to schedule the timelock on L1
+    ///         the L1 schedule calldata must be the calldata for all arbitrum proposals
     function getScheduleTimelockCaldata()
         public
         view
@@ -166,6 +168,8 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         arguments[0] = callData;
     }
 
+    /// @notice override the GovernorOZProposal simulate function to handle
+    ///         the proposal L1 settlement
     function simulate() public override {
         // First part of Arbitrum Governance proposal path follows the OZ
         // Governor with TimelockController extension

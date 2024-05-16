@@ -154,11 +154,5 @@
         "name": "DEPLOYER_EOA",
         "chainId": 42161,
         "isContract": false
-    },
-    {
-        "addr": "0x4dbd4fc535ac27206064b68ffcf827b0a60bab3f",
-        "chainId": 1,
-        "name": "ARBITRUM_ONE_INBOX",
-        "isContract": true
     }
 ]
