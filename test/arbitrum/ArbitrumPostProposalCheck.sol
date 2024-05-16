@@ -8,7 +8,7 @@ import {ArbitrumProposal} from "src/proposals/ArbitrumProposal.sol";
 // @notice this is a helper contract to execute proposals before running integration tests.
 // @dev should be inherited by integration test contracts.
 contract ArbitrumPostProposalCheck is Test {
-    Addresses public addresses;
+    Addresses internal addresses;
 
     function setUp() public {}
 
@@ -22,7 +22,7 @@ contract ArbitrumPostProposalCheck is Test {
         ArbitrumProposal proposal = ArbitrumProposal(deployCode(output));
         vm.makePersistent(address(proposal));
 
-        // Execute proposals
+        // Execute proposal
         proposal.run();
 
         // Get the addresses contract

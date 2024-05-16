@@ -47,7 +47,13 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
         );
         vm.makePersistent(address(addresses));
 
-        governor = IGovernor(addresses.getAddress("ARBITRUM_L2_CORE_GOVERNOR"));
+        setPrimaryForkId(vm.createFork("arbitrum"));
+
+        setEthForkId(vm.createFork("ethereum"));
+
+        vm.selectFork(primaryForkId);
+
+        setGovernor(addresses.getAddress("ARBITRUM_L2_CORE_GOVERNOR"));
 
         super.run();
     }

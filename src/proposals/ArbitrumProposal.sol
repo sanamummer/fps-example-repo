@@ -21,6 +21,14 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
 
     ProposalExecutionChain internal executionChain;
 
+    /// @notice arbitrum proposals must be settled on the l1 network
+    uint256 public ethForkId;
+
+    /// @notice set eth fork id
+    function setEthForkId(uint256 _forkId) public {
+        ethForkId = _forkId;
+    }
+
     /// @notice Arbitrum proposals should have a single action
     function _validateActions() internal view override {
         uint256 actionsLength = actions.length;
@@ -49,7 +57,6 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
     /// to ArbSys address with the l1 timelock schedule calldata
     function getProposalActions()
         public
-        view
         override
         returns (
             address[] memory targets,
@@ -61,9 +68,21 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
 
         // TODO add lint to CI
 
+        vm.selectFork(ethForkId);
+
         uint256 minDelay = ITimelockController(
             addresses.getAddress("ARBITRUM_L1_TIMELOCK")
         ).getMinDelay();
+
+        address inbox;
+
+        if (executionChain == ProposalExecutionChain.ARB_ONE) {
+            inbox = addresses.getAddress("ARBITRUM_ONE_INBOX");
+        } else if (executionChain == ProposalExecutionChain.ARB_NOVA) {
+            inbox = addresses.getAddress("ARBITRUM_NOVA_INBOX");
+        }
+
+        vm.selectFork(primaryForkId);
 
         bytes memory innerCalldata = abi.encodeWithSelector(
             ITimelockController.schedule.selector,
@@ -78,8 +97,7 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
                 ? actions[0].arguments
                 : abi.encode( // these are the retryable data params
                         // the inbox we want to use, should be arb one or nova
-                        // inbox. getAddress get the correct one based on the execution chain
-                        addresses.getAddress("ARBITRUM_L2_INBOX"),
+                        inbox,
                         addresses.getAddress("ARBITRUM_L2_UPGRADE_EXECUTOR"), // the upgrade executor on the l2 network
                         0, // no value in this upgrade
                         0, // max gas - will be filled in when the retryable is actually executed
