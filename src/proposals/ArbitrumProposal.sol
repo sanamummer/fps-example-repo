@@ -18,8 +18,18 @@ import {MockArbOutbox} from "../mocks/MockArbOutbox.sol";
 abstract contract ArbitrumProposal is GovernorOZProposal {
     using Address for address;
 
-    address public constant RETRYABLE_TICKET_MAGIC =
+    /// @notice the target address on L1 Timelock when it's a L2 proposal
+    address private constant RETRYABLE_TICKET_MAGIC =
         0xa723C008e76E379c55599D2E4d93879BeaFDa79C;
+
+    /// @notice minimum delay for the Arbitrum L1 timelock
+    uint256 private minDelay = 3 days;
+
+    /// @notice Arbitrum One inbox address on mainnet
+    address private arbOneInbox = 0x4Dbd4fc535Ac27206064B68FfCf827b0A60BAB3f;
+
+    /// @notice Arbitrum Nova inbox address on mainnet
+    address private arbNovaInbox = 0xc4448b71118c9071Bcb9734A0EAc55D18A153949;
 
     enum ProposalExecutionChain {
         ETH,
@@ -27,6 +37,7 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         ARB_NOVA
     }
 
+    /// @notice the chain where the proposal will be executed after L1 settlement
     ProposalExecutionChain internal executionChain;
 
     /// @notice arbitrum proposals must be settled on the l1 network
@@ -83,22 +94,17 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
 
     function getScheduleTimelockCaldata()
         public
+        view
         returns (bytes memory scheduleCalldata)
     {
-        vm.selectFork(ethForkId);
-        uint256 minDelay = ITimelockController(
-            addresses.getAddress("ARBITRUM_L1_TIMELOCK")
-        ).getMinDelay();
-
+        // address only used if is a L2 proposal
         address inbox;
 
         if (executionChain == ProposalExecutionChain.ARB_ONE) {
-            inbox = addresses.getAddress("ARBITRUM_ONE_INBOX");
+            inbox = arbOneInbox;
         } else if (executionChain == ProposalExecutionChain.ARB_NOVA) {
-            inbox = addresses.getAddress("ARBITRUM_NOVA_INBOX");
+            inbox = arbNovaInbox;
         }
-
-        vm.selectFork(primaryForkId);
 
         scheduleCalldata = abi.encodeWithSelector(
             ITimelockController.schedule.selector,
@@ -131,6 +137,7 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
     /// to ArbSys address with the l1 timelock schedule calldata
     function getProposalActions()
         public
+        view
         override
         returns (
             address[] memory targets,
@@ -203,8 +210,6 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
             );
 
             // warp to the future to execute the proposal
-            uint256 minDelay = timelock.getMinDelay();
-
             vm.warp(block.timestamp + minDelay);
         }
 
