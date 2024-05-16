@@ -4,10 +4,10 @@ pragma solidity ^0.8.0;
 import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import {IProxy} from "@forge-proposal-simulator/src/interface/IProxy.sol";
 import {IGovernor, IGovernorTimelockControl, IGovernorVotes} from "@forge-proposal-simulator/src/interface/IGovernor.sol";
-import {IProxyAdmin} from "@forge-proposal-simulator/src/interface/IProxyAdmin.sol";
 import {MockUpgrade} from "@forge-proposal-simulator/mocks/MockUpgrade.sol";
 
 import {Addresses} from "@addresses/Addresses.sol";
+import {MockProxyUpgradeAction} from "src/mocks/MockProxyUpgradeAction.sol";
 import {ArbitrumProposal} from "./ArbitrumProposal.sol";
 
 interface IUpgradeExecutor {
@@ -17,17 +17,8 @@ interface IUpgradeExecutor {
     ) external payable;
 }
 
-// Arbitrum upgrades must be done through a delegate call to a GAC deployed contract
-contract ProxyUpgradeAction {
-    function perform(
-        address admin,
-        address payable target,
-        address newLogic
-    ) public payable {
-        IProxyAdmin(admin).upgrade(target, newLogic);
-    }
-}
-
+/// @title ArbitrumProposal_01
+/// @notice This is a example proposal that upgrades the L2 weth gateway
 contract ArbitrumProposal_01 is ArbitrumProposal {
     constructor() {
         executionChain = ProposalExecutionChain.ARB_ONE;
@@ -38,7 +29,7 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
     }
 
     function description() public pure override returns (string memory) {
-        return "This proposal upgrades de L2 weth gateway";
+        return "This proposal upgrades the L2 weth gateway";
     }
 
     function run() public override {
@@ -72,7 +63,7 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
         }
 
         if (!addresses.isAddressSet("PROXY_UPGRADE_ACTION")) {
-            address gac = address(new ProxyUpgradeAction());
+            address gac = address(new MockProxyUpgradeAction());
             addresses.addAddress("PROXY_UPGRADE_ACTION", gac, true);
         }
     }
@@ -89,7 +80,7 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
         upgradeExecutor.execute(
             addresses.getAddress("PROXY_UPGRADE_ACTION"),
             abi.encodeWithSelector(
-                ProxyUpgradeAction.perform.selector,
+                MockProxyUpgradeAction.perform.selector,
                 addresses.getAddress("ARBITRUM_L2_PROXY_ADMIN"),
                 addresses.getAddress("ARBITRUM_L2_WETH_GATEWAY_PROXY"),
                 addresses.getAddress("ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION")
