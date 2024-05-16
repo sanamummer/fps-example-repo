@@ -9,6 +9,8 @@ import {IProxy} from "@forge-proposal-simulator/src/interface/IProxy.sol";
 import {IGovernor, IGovernorTimelockControl, IGovernorVotes} from "@forge-proposal-simulator/src/interface/IGovernor.sol";
 import {IProxyAdmin} from "@forge-proposal-simulator/src/interface/IProxyAdmin.sol";
 
+import {MockArbSys} from "../mocks/MockArbSys.sol";
+
 abstract contract ArbitrumProposal is GovernorOZProposal {
     address public constant RETRYABLE_TICKET_MAGIC =
         0xa723C008e76E379c55599D2E4d93879BeaFDa79C;
@@ -27,6 +29,12 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
     /// @notice set eth fork id
     function setEthForkId(uint256 _forkId) public {
         ethForkId = _forkId;
+    }
+
+    /// @notice mock arb sys precompiled contract
+    function afterDeployMock() public override {
+        address arbsys = address(new MockArbSys());
+        vm.etch(addresses.getAddress("ARBITRUM_SYS"), address(arbsys).code);
     }
 
     /// @notice Arbitrum proposals should have a single action
@@ -70,9 +78,9 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
 
         vm.selectFork(ethForkId);
 
-        uint256 minDelay = ITimelockController(
-            addresses.getAddress("ARBITRUM_L1_TIMELOCK")
-        ).getMinDelay();
+        address l1Timelock = addresses.getAddress("ARBITRUM_L1_TIMELOCK");
+
+        uint256 minDelay = ITimelockController(l1Timelock).getMinDelay();
 
         address inbox;
 
@@ -113,14 +121,20 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         values = new uint256[](1);
         arguments = new bytes[](1);
 
+        bytes memory callData = abi.encodeWithSelector(
+            MockArbSys.sendTxToL1.selector,
+            l1Timelock,
+            innerCalldata
+        );
+
         // Arbitrum proposals target must be the ArbSys precompiled address
         targets[0] = addresses.getAddress("ARBITRUM_SYS");
         values[0] = 0;
-        arguments[0] = innerCalldata;
+        arguments[0] = callData;
     }
 
     function simulate() public override {
-        // First part of Arbitrum Governance proposal path follow the OZ
+        // First part of Arbitrum Governance proposal path follows the OZ
         // Governor with TimelockController extension
         super.simulate();
     }
