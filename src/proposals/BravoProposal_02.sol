@@ -9,7 +9,7 @@ import {Token} from "src/mocks/Token.sol";
 
 contract BravoProposal_02 is GovernorBravoProposal {
     function name() public pure override returns (string memory) {
-        return "BRAVO_MOCK_2";
+        return "BRAVO_MOCK_02";
     }
 
     function description() public pure override returns (string memory) {
