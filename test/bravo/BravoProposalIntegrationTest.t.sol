@@ -7,7 +7,7 @@ import {BravoPostProposalCheck} from "./BravoPostProposalCheck.sol";
 // @dev This test contract extends BravoPostProposalCheck, granting it
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
-contract BravoProposalIntegrationTest is BravoPostProposalCheck {
+contract SepoliaBravoProposalIntegrationTest is BravoPostProposalCheck {
     function test_addTokenToWhitelist() public {
         Vault governorVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
