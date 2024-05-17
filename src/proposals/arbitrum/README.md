@@ -12,13 +12,16 @@ Proposals must be submitted to the Governor on L2. The calldata of the proposal 
 
 ### L2 Arbitrum
 
-If a proposal passes the Arbitrum One Governor, it must be queued and executed on the Arbitrum One Timelock, which requires a minimum delay of three days before execution.
+If a proposal passes the L2 Governor, it must be queued and executed on the L2 Timelock, which requires a minimum delay of three days before execution.
 
 ### L1 Arbitrum
 
-The execution involves making a call to the ArbSys precompiled contract on Arbitrum One, which requires a one-week delay to generate the Merkle root. Once the Merkle root is generated, anyone can call the Arbitrum Bridge on L1 with the proof to submit the proposal to the Ethereum Timelock.
+The execution involves making a call to the ArbSys precompiled contract on L2,
+which requires a one-week delay to generate the Merkle root. Once the Merkle
+root is generated, anyone can call the Arbitrum Bridge on L1 with the proof to
+submit the proposal to the L1 Timelock.
 
-Once the proposal is scheduled on the Ethereum Timelock, it requires a three-day delay before it becomes executable. Although only the Arbitrum Bridge can schedule proposals, anyone can execute them.
+Once the proposal is scheduled on the L1 Timelock, it requires a three-day delay before it becomes executable. Although only the Arbitrum Bridge can schedule proposals, anyone can execute them.
 
 If the target is an L1 contract, the proposal follows the standard OpenZeppelin Timelock path. For L2 proposals, identified by the target being a Retryable Ticket Magic address, a call to the L1 inbox generates the L2 ticket. Once it is bridged to L2, anyone can execute the ticket.
 
@@ -40,4 +43,31 @@ includes L2 submission, L1 settlement, and execution on L1 if is the case, or on
 
 ### ArbitrumProposal Contract Functions Overview
 
--   `afterDeployMock`:
+-   `afterDeployMock`: function provided by the FPS can be
+    used to mock any contract when direct interaction with the on-chain state is
+    not possible for running the proposal lifecycle simulation. The Merkle tree
+    generation part of the proposal cycle cannot be simulated because it is an
+    off-chain process carried out in Golang. Therefore, it is necessary to mock
+    the active outbox on the Arbitrum Bridge to return the L2 Timelock on the
+    `l2ToL1Sender` function. Additionally, Foundry does not support interactions
+    with precompiled contracts, so the ArbSys contract must also be mocked.
+
+-   `validateActions`: FPS internal function that is automatically called after
+    the build function (more information about the build function is provided
+    below). Arbitrum proposals should only contain a single action - the call to
+    the ArbSys precompiled contract. Therefore, the 'validateActions' function is
+    overridden to ensure that only one action is present.
+-   `getScheduleTimelockCalldata`: function used to generate the calldata
+    for the schedule function of the Timelock on Ethereum.
+
+-   `getProposalActions`: function used to generate the actions for the
+    proposal. In this case, it generates a single action to call the ArbSys
+    precompiled contract. This is a utility function that is used by other
+    functions like `simulate` and GovernorOzProposal `getCalldata`.
+-   `simulate`: this function is used to simulate the proposal lifecycle. The
+    first part of the simulation follows the standard OZ Governor proposal path by
+    calling `super.simulate()`. FPS leverages Foundry to simulate proposing,
+    voting, queuing on the L2 timelock, and finally executing. Once the proposal
+    is executed by the L2 Timelock, ArbitrumProposal simulates the L1 settlement
+    by calling the L1 Timelock using the Bridge as the sender to schedule the
+    proposal. Finally, the proposal is executed on L1 and if the target is an L2 contract, the calldata is retrievable from the logs and it's executed on L2, which can be either Arbitrum One or Arbitrum Nova.
