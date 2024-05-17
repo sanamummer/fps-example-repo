@@ -8,7 +8,7 @@ on Ethereum (referred to as L1).
 
 ### L2 Governor
 
-Proposals must be submitted to the Governor on L2. The calldata of the proposal should be a call to the schedule function of the Timelock on Ethereum, with the target being the ArbSys precompiled contract.
+Proposals must be submitted to the Governor on L2. The calldata of the proposal should be a call to the schedule function of the Timelock on L1, with the target being the ArbSys precompiled contract.
 
 ### L2 Arbitrum
 
@@ -89,7 +89,7 @@ We have developed two examples to illustrate how an Arbitrum proposal can be cre
 -   `run`: This function is automatically called when running the proposal using `forge script`. It is essential to override the FPS run function to create the forks. The primary fork should always be the L2 fork, as it's where the proposal is submitted, and the secondary fork should be the L1 fork. We also set the governor address here. All the above functions and the ones described below are called from the `run` function, and FPS provides environment variables to skip any of them if needed.
 
 -   `deploy`: function used to deploy the contracts needed for the
-    proposal. In this case, the WETH Gateway contract is deployed on L2. We also
+    proposal. In the examples, the WETH Gateway contract is deployed. We also
     deploy the GAC that will be used to upgrade the WETH Gateway contract, but
     this is not necessary if the GAC is pre-deployed.
 -   `build`: function used to build the final proposal actions. Foundry is
@@ -115,7 +115,7 @@ eliminating the need for manual testing configuration and calldata crafting. The
 proposal is created in a declarative manner using Solidity. Calldata is
 programmatically generated and can be easily retrieved. Prior to on-chain
 submission, each proposal undergoes testing against the Arbitrum Integration
-Test Suite in a mainnet forked environment to ensure it fu\nctions as intended
+Test Suite in a mainnet forked environment to ensure it functions as intended
 and is safe to execute. CI can be used to streamline the process even more.
 Additionally, this framework allows testing not only of
 governance proposals but also of their associated deployment scripts. After the
