@@ -6,7 +6,7 @@ import {GovernorBravoDelegator} from "@comp-governance/GovernorBravoDelegator.so
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
-import {MockERC20Votes} from "src/mocks/MockERC20Votes.sol";
+import {MockERC20Votes} from "src/mocks/bravo/MockERC20Votes.sol";
 import {Timelock} from "src/mocks/bravo/Timelock.sol";
 import {GovernorBravoDelegate} from "src/mocks/bravo/GovernorBravoDelegate.sol";
 
@@ -41,7 +41,10 @@ contract DeployGovernorBravo is Script {
             address(timelock),
             0,
             "",
-            abi.encodeWithSignature("setPendingAdmin(address)", address(governor)),
+            abi.encodeWithSignature(
+                "setPendingAdmin(address)",
+                address(governor)
+            ),
             block.timestamp + 180
         );
 
@@ -51,9 +54,17 @@ contract DeployGovernorBravo is Script {
         addresses.changeAddress("PROTOCOL_GOVERNOR", address(governor), true);
 
         // Update PROTOCOL_TIMELOCK_BRAVO address
-        addresses.changeAddress("PROTOCOL_TIMELOCK_BRAVO", address(timelock), true);
+        addresses.changeAddress(
+            "PROTOCOL_TIMELOCK_BRAVO",
+            address(timelock),
+            true
+        );
 
-        addresses.changeAddress("PROTOCOL_GOVERNANCE_TOKEN", address(govToken), true);
+        addresses.changeAddress(
+            "PROTOCOL_GOVERNANCE_TOKEN",
+            address(govToken),
+            true
+        );
 
         addresses.printJSONChanges();
     }
