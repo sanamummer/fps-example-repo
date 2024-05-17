@@ -36,7 +36,7 @@ We have developed an [ArbitrumProposal.sol](./ArbitrumProposal.sol) contract
 that extends the FPS GovernorOZProposal to showcase the FPS capabilities. FPS
 allows the creation of declarative proposals that undergo not only code review
 but also integration tests simulating the entire proposal lifecycle. This
-includes L2 submission, L1 settlement, and execution on L1 if is the case, or on L2 if the target is an L2 contract. FPS streamlines the process by eliminating the need for manual testing and calldata crafting, handling all complexities. Prior to on-chain submission, each proposal undergoes testing against the Arbitrum Integration Test in a forked mainnet environment to ensure it functions as intended and is safe to execute.
+includes L2 submission, L1 settlement, and execution on L1 if is the case, or on L2 if the target is an L2 contract. FPS streamlines the process by eliminating the need for manual testing and calldata crafting. Calldata is programmatically generated and then run. Prior to on-chain submission, each proposal undergoes testing against the Arbitrum Integration Test Suite in a mainnet forked environment to ensure it functions as intended and is safe to execute. Additionally, this framework allows testing not only of governance proposals but of their associated deployment scripts.
 
 ### ArbitrumProposal Contract Functions Overview
 
