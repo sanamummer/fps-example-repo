@@ -5,7 +5,7 @@ import {IProxy} from "@forge-proposal-simulator/src/interface/IProxy.sol";
 import {MockUpgrade} from "@forge-proposal-simulator/mocks/MockUpgrade.sol";
 
 import {Addresses} from "@addresses/Addresses.sol";
-import {MockProxyUpgradeAction} from "src/mocks/MockProxyUpgradeAction.sol";
+import {MockProxyUpgradeAction} from "src/mocks/arbitrum/MockProxyUpgradeAction.sol";
 import {ArbitrumProposal} from "./ArbitrumProposal.sol";
 
 interface IUpgradeExecutor {

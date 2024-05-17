@@ -8,8 +8,8 @@ import {GovernorOZProposal} from "@forge-proposal-simulator/src/proposals/Govern
 import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import {Address} from "@forge-proposal-simulator/utils/Address.sol";
 
-import {MockArbSys} from "src/mocks/MockArbSys.sol";
-import {MockArbOutbox} from "src/mocks/MockArbOutbox.sol";
+import {MockArbSys} from "src/mocks/arbitrum/MockArbSys.sol";
+import {MockArbOutbox} from "src/mocks/arbitrum/MockArbOutbox.sol";
 
 abstract contract ArbitrumProposal is GovernorOZProposal {
     using Address for address;

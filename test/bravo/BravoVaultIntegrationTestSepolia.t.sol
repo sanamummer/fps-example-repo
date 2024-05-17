@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
-import {Vault} from "src/mocks/Vault.sol";
-import {Token} from "src/mocks/Token.sol";
+import {Vault} from "src/mocks/vault/Vault.sol";
+import {Token} from "src/mocks/vault/Token.sol";
 import {BravoPostProposalCheck} from "./BravoPostProposalCheck.sol";
 
 // @dev This test contract extends BravoPostProposalCheck, granting it

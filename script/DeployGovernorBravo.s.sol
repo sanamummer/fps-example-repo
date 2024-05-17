@@ -6,7 +6,7 @@ import {GovernorBravoDelegator} from "@comp-governance/GovernorBravoDelegator.so
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
-import {MockERC20Votes} from "src/mocks/MockERC20Votes.sol";
+import {MockERC20Votes} from "src/mocks/bravo/MockERC20Votes.sol";
 import {Timelock} from "src/mocks/bravo/Timelock.sol";
 import {GovernorBravoDelegate} from "src/mocks/bravo/GovernorBravoDelegate.sol";
 

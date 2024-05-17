@@ -4,7 +4,7 @@ import "@forge-std/Script.sol";
 
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
-import {MockGovernorAlpha} from "src/mocks/MockGovernorAlpha.sol";
+import {MockGovernorAlpha} from "src/mocks/bravo/MockGovernorAlpha.sol";
 import {Timelock} from "src/mocks/bravo/Timelock.sol";
 import {GovernorBravoDelegate} from "src/mocks/bravo/GovernorBravoDelegate.sol";
 
