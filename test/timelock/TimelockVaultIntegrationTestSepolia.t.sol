@@ -7,7 +7,7 @@ import {TimelockPostProposalCheck} from "./TimelockPostProposalCheck.sol";
 // @dev This test contract extends TimelockPostProposalCheck, granting it
 // the ability to interact with state modifications effected by proposals
 // and to work with newly deployed contracts, if applicable.
-contract SepoliaTimelockProposalIntegrationTest is TimelockPostProposalCheck {
+contract TimelockVaultIntegrationTestSepolia is TimelockPostProposalCheck {
     function test_addTokenToWhitelist() public {
         Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK");

@@ -2,6 +2,7 @@ pragma solidity ^0.8.0;
 
 import {MultisigProposal} from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+
 import {Vault} from "src/mocks/Vault.sol";
 import {Token} from "src/mocks/Token.sol";
 
