@@ -33,15 +33,25 @@ For Transparent Upgradeable Proxy Contracts managed by the Proxy Admin, the GAC 
 
 ## Current Proposal Creation Process
 
+Based on the Arbitrum governance documentation, the proposal creation process is as follows:
+
+1. Create the GAC.
+2. (Optional) Create unit tests for the GAC.
+3. Deploy the GAC to the respective network.
+4. Create the proposal calldata by running a script passing the p[rovider, chain , GAC address and the json destination path.
+5. Run simulation on the seatbelt repo. A PR with manual configuration is required.
+6. Submit the proposal to the Governor.
+
 ## Proposal Creation Examples Using FPS
 
 We have developed an [ArbitrumProposal.sol](./ArbitrumProposal.sol) contract
 that extends the FPS GovernorOZProposal to showcase the FPS capabilities. FPS
 allows the creation of declarative proposals that undergo not only code review
 but also integration tests simulating the entire proposal lifecycle. This
-includes L2 submission, L1 settlement, and execution on L1 if is the case, or on L2 if the target is an L2 contract. FPS streamlines the process by eliminating the need for manual testing and calldata crafting. Calldata is programmatically generated and then run. Prior to on-chain submission, each proposal undergoes testing against the Arbitrum Integration Test Suite in a mainnet forked environment to ensure it functions as intended and is safe to execute. Additionally, this framework allows testing not only of governance proposals but of their associated deployment scripts.
+includes L2 submission, L1 settlement, and execution on L1 if is the case, or on
+L2 if the target is an L2 contract.
 
-### ArbitrumProposal Contract Functions Overview
+### ArbitrumProposal Functions
 
 -   `afterDeployMock`: function provided by the FPS can be
     used to mock any contract when direct interaction with the on-chain state is
@@ -71,3 +81,45 @@ includes L2 submission, L1 settlement, and execution on L1 if is the case, or on
     is executed by the L2 Timelock, ArbitrumProposal simulates the L1 settlement
     by calling the L1 Timelock using the Bridge as the sender to schedule the
     proposal. Finally, the proposal is executed on L1 and if the target is an L2 contract, the calldata is retrievable from the logs and it's executed on L2, which can be either Arbitrum One or Arbitrum Nova.
+
+### Examples
+
+We have developed two examples to illustrate how an Arbitrum proposal can be created and simulated using FPS. The first example is a proposal to upgrade the WETH Gateway contract on L2, while the second example is a proposal to upgrade the WETH Gateway contract on L1. Both examples inherit from the ArbitrumProposal. The only distinction between the two examples is the execution layer and target contracts.
+
+-   `run`: This function is automatically called when running the proposal using `forge script`. It is essential to override the FPS run function to create the forks. The primary fork should always be the L2 fork, as it's where the proposal is submitted, and the secondary fork should be the L1 fork. We also set the governor address here. All the above functions and the ones described below are called from the `run` function, and FPS provides environment variables to skip any of them if needed.
+
+-   `deploy`: function used to deploy the contracts needed for the
+    proposal. In this case, the WETH Gateway contract is deployed on L2. We also
+    deploy the GAC that will be used to upgrade the WETH Gateway contract, but
+    this is not necessary if the GAC is pre-deployed.
+-   `build`: function used to build the final proposal actions. Foundry is
+    leveraged to record the actions, so plain Solidity code is used for building
+    the actions.
+-   `validate`: function called after simulation to ensure that the proposal
+    is valid. This function checks the proposal's state after the simulation and
+    ensures that the actions built in the `build` function apply the expected
+    changes.
+-   `getCalldata`: function used to generate the calldata for submitting the
+    proposal. It's not necessary to override this function, as it's already
+    implemented in the GovernorOzProposal contract.
+
+When running a proposal through the `forge script`, FPS calls all the functions described above in the following order: `deploy`, `build`, `simulate`, `validate`, and `getCalldata` to ensure the proposal is valid and can be submitted to the Governor. The calldata is printed to the console, and the contracts deployed in the `deploy` function can be broadcasted to the network if needed.
+
+Integration test suites can be integrated with proposal lifecycle simulation to
+ensure the protocol remains safe and functional after the proposal is executed.
+
+## Overview
+
+The FPS streamlines the proposal creation process by
+eliminating the need for manual testing configuration and calldata crafting. The
+proposal is created in a declarative manner using Solidity. Calldata is
+programmatically generated and can be easily retrieved. Prior to on-chain
+submission, each proposal undergoes testing against the Arbitrum Integration
+Test Suite in a mainnet forked environment to ensure it fu\nctions as intended
+and is safe to execute. CI can be used to streamline the process even more.
+Additionally, this framework allows testing not only of
+governance proposals but also of their associated deployment scripts. After the
+full lifecycle simulation and testing, the proposal can be submitted to the
+Governor with the code assurance that the proposal is valid and safe to
+execute. Using FPS the steps 3, 4 and 5 of the current Arbitrum proposal
+creation process can be combined into a single step.
