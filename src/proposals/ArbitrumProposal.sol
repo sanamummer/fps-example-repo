@@ -19,13 +19,15 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         0xa723C008e76E379c55599D2E4d93879BeaFDa79C;
 
     /// @notice minimum delay for the Arbitrum L1 timelock
-    uint256 private minDelay = 3 days;
+    uint256 private constant minDelay = 3 days;
 
     /// @notice Arbitrum One inbox address on mainnet
-    address private arbOneInbox = 0x4Dbd4fc535Ac27206064B68FfCf827b0A60BAB3f;
+    address private constant arbOneInbox =
+        0x4Dbd4fc535Ac27206064B68FfCf827b0A60BAB3f;
 
     /// @notice Arbitrum Nova inbox address on mainnet
-    address private arbNovaInbox = 0xc4448b71118c9071Bcb9734A0EAc55D18A153949;
+    address private constant arbNovaInbox =
+        0xc4448b71118c9071Bcb9734A0EAc55D18A153949;
 
     enum ProposalExecutionChain {
         ETH,
