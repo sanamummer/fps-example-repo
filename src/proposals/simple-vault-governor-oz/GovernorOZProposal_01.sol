@@ -17,15 +17,13 @@ contract GovernorOZProposal_01 is GovernorOZProposal {
     }
 
     function run() public override {
-        primaryForkId = vm.createFork("sepolia");
-        vm.selectFork(primaryForkId);
+        setPrimaryForkId(vm.createSelectFork("sepolia"));
 
         setAddresses(
             new Addresses(
                 vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))
             )
         );
-        vm.makePersistent(address(addresses));
 
         setGovernor(addresses.getAddress("GOVERNOR_OZ"));
 
@@ -68,9 +66,8 @@ contract GovernorOZProposal_01 is GovernorOZProposal {
             addresses.getAddress("GOVERNOR_OZ_TIMELOCK")
         );
 
-        Vault(governorOZVault).whitelistToken(token, true);
-
         /// CALLS -- mutative and recorded
+        Vault(governorOZVault).whitelistToken(token, true);
         Token(token).approve(governorOZVault, balance);
         Vault(governorOZVault).deposit(token, balance);
     }

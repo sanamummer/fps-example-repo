@@ -16,15 +16,13 @@ contract TimelockProposal_02 is TimelockProposal {
     }
 
     function run() public override {
-        primaryForkId = vm.createFork("sepolia");
-        vm.selectFork(primaryForkId);
+        setPrimaryForkId(vm.createSelectFork("sepolia"));
 
         setAddresses(
             new Addresses(
                 vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))
             )
         );
-        vm.makePersistent(address(addresses));
 
         setTimelock(addresses.getAddress("PROTOCOL_TIMELOCK"));
 

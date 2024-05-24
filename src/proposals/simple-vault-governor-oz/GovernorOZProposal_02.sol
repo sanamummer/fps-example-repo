@@ -17,15 +17,13 @@ contract GovernorOZProposal_02 is GovernorOZProposal {
     }
 
     function run() public override {
-        primaryForkId = vm.createFork("sepolia");
-        vm.selectFork(primaryForkId);
+        setPrimaryForkId(vm.createSelectFork("sepolia"));
 
         setAddresses(
             new Addresses(
                 vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))
             )
         );
-        vm.makePersistent(address(addresses));
 
         setGovernor(addresses.getAddress("GOVERNOR_OZ"));
 
