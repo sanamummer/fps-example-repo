@@ -20,7 +20,7 @@ contract DeployGovernorOz is Script {
         address[] memory proposers = new address[](1);
         proposers[0] = dev;
         address[] memory executors = new address[](1);
-        executors[0] = dev;
+        executors[0] = address(0);
 
         vm.startBroadcast();
         // Deploy a new TimelockController
@@ -39,7 +39,6 @@ contract DeployGovernorOz is Script {
 
         // add propose and execute role for governor
         timelock.grantRole(keccak256("PROPOSER_ROLE"), address(governor));
-        timelock.grantRole(keccak256("EXECUTOR_ROLE"), address(governor));
 
         vm.stopBroadcast();
 
