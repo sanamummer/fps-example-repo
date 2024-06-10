@@ -1,27 +1,34 @@
 pragma solidity ^0.8.0;
 
-import "@forge-std/Script.sol";
-
-import {GovernorBravoDelegator} from "@comp-governance/GovernorBravoDelegator.sol";
-
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
+import {GovernorBravoDelegator} from "@comp-governance/GovernorBravoDelegator.sol";
+import {MultisigProposal} from "@forge-proposal-simulator/src/proposals/MultisigProposal.sol";
 
 import {MockERC20Votes} from "src/mocks/bravo/MockERC20Votes.sol";
 import {Timelock} from "src/mocks/bravo/Timelock.sol";
 import {GovernorBravoDelegate} from "src/mocks/bravo/GovernorBravoDelegate.sol";
 
-contract DeployGovernorBravo is Script {
-    function run() public virtual {
-        Addresses addresses = new Addresses("./addresses/Addresses.json");
+/// @notice Governor Bravo deployment contract
+/// DO_PRINT=false DO_BUILD=false DO_DEPLOY=true DO_VALIDATE=true forge script script/DeployGovernorBravo.s.sol:DeployGovernorBravo --fork-url sepolia -vvvvv
+contract DeployGovernorBravo is MultisigProposal {
+    function name() public pure override returns (string memory) {
+        return "GOVERNOR_BRAVO_DEPLOY";
+    }
 
-        vm.startBroadcast();
+    function description() public pure override returns (string memory) {
+        return "Deploy Governor BRAVO contract";
+    }
+
+    function deploy() public override {
+        address deployer = addresses.getAddress("DEPLOYER_EOA");
+        
         // Deploy and configure the timelock
-        Timelock timelock = new Timelock(msg.sender, 1);
+        Timelock timelock = new Timelock(deployer, 1);
 
         // Deploy the governance token
         MockERC20Votes govToken = new MockERC20Votes("Governance Token", "GOV");
 
-        govToken.mint(msg.sender, 1e21);
+        govToken.mint(deployer, 1e21);
 
         // Deploy the GovernorBravoDelegate implementation
         GovernorBravoDelegate implementation = new GovernorBravoDelegate();
@@ -30,7 +37,7 @@ contract DeployGovernorBravo is Script {
         GovernorBravoDelegator governor = new GovernorBravoDelegator(
             address(timelock), // timelock
             address(govToken), // governance token
-            msg.sender, // admin
+            deployer, // admin
             address(implementation), // implementation
             60, // voting period
             1, // voting delay
@@ -47,8 +54,6 @@ contract DeployGovernorBravo is Script {
             ),
             block.timestamp + 180
         );
-
-        vm.stopBroadcast();
 
         // Update PROTOCOL_GOVERNOR address
         addresses.changeAddress("PROTOCOL_GOVERNOR", address(governor), true);
@@ -67,5 +72,18 @@ contract DeployGovernorBravo is Script {
         );
 
         addresses.printJSONChanges();
+    }
+
+    function run() public override {
+        setAddresses(new Addresses("./addresses/Addresses.json"));
+
+        super.run();
+    }
+
+    function validate() public override {
+        MockERC20Votes govToken = MockERC20Votes(addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN"));
+
+        // ensure governance token is minted to deployer address
+        assertEq(govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")), 1e21);
     }
 }
