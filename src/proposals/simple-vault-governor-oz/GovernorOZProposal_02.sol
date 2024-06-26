@@ -45,7 +45,7 @@ contract GovernorOZProposal_02 is GovernorOZProposal {
         governorOZVault.withdraw(token, payable(timelock), amount);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault governorOZVault = Vault(addresses.getAddress("GOVERNOR_OZ_VAULT"));
         Token token = Token(addresses.getAddress("GOVERNOR_OZ_VAULT_TOKEN"));
 

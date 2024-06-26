@@ -49,7 +49,7 @@ contract MultisigProposal_02 is MultisigProposal {
         _simulateActions(multisig);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         Token token = Token(addresses.getAddress("MULTISIG_TOKEN"));
         address multisig = addresses.getAddress("DEV_MULTISIG");

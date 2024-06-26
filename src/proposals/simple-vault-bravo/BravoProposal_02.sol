@@ -45,7 +45,7 @@ contract BravoProposal_02 is GovernorBravoProposal {
         bravoVault.withdraw(token, payable(timelock), amount);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         Token token = Token(addresses.getAddress("BRAVO_VAULT_TOKEN"));
 

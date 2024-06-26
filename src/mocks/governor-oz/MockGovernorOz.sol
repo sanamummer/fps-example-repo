@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/governance/Governor.sol";
-import "@openzeppelin/governance/extensions/GovernorVotes.sol";
-import "@openzeppelin/governance/extensions/GovernorCountingSimple.sol";
-import "@openzeppelin/governance/extensions/GovernorVotesQuorumFraction.sol";
-import "@openzeppelin/governance/extensions/GovernorTimelockControl.sol";
+import {Governor} from "@openzeppelin/governance/Governor.sol";
+import {GovernorVotes, IVotes} from "@openzeppelin/governance/extensions/GovernorVotes.sol";
+import {GovernorCountingSimple} from "@openzeppelin/governance/extensions/GovernorCountingSimple.sol";
+import {GovernorVotesQuorumFraction} from "@openzeppelin/governance/extensions/GovernorVotesQuorumFraction.sol";
+import {GovernorTimelockControl, TimelockController} from "@openzeppelin/governance/extensions/GovernorTimelockControl.sol";
 
 contract MockGovernorOz is
     Governor,

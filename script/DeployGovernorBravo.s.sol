@@ -21,54 +21,61 @@ contract DeployGovernorBravo is MultisigProposal {
 
     function deploy() public override {
         address deployer = addresses.getAddress("DEPLOYER_EOA");
-        
-        // Deploy and configure the timelock
-        Timelock timelock = new Timelock(deployer, 1);
 
-        // Deploy the governance token
-        MockERC20Votes govToken = new MockERC20Votes("Governance Token", "GOV");
+        if (!addresses.isAddressSet("PROTOCOL_TIMELOCK_BRAVO")) {
+            // Deploy and configure the timelock
+            Timelock timelock = new Timelock(deployer, 1);
 
-        govToken.mint(deployer, 1e21);
+            // Add PROTOCOL_TIMELOCK_BRAVO address
+            addresses.addAddress(
+                "PROTOCOL_TIMELOCK_BRAVO",
+                address(timelock),
+                true
+            );
+        }
 
-        // Deploy the GovernorBravoDelegate implementation
-        GovernorBravoDelegate implementation = new GovernorBravoDelegate();
+        if (!addresses.isAddressSet("PROTOCOL_GOVERNANCE_TOKEN")) {
+            // Deploy the governance token
+            MockERC20Votes govToken = new MockERC20Votes("Governance Token", "GOV");
 
-        // Deploy and configure the GovernorBravoDelegator
-        GovernorBravoDelegator governor = new GovernorBravoDelegator(
-            address(timelock), // timelock
-            address(govToken), // governance token
-            deployer, // admin
-            address(implementation), // implementation
-            60, // voting period
-            1, // voting delay
-            1e21 // proposal threshold
-        );
+            govToken.mint(deployer, 1e21);
 
-        timelock.queueTransaction(
-            address(timelock),
+            // Add PROTOCOL_GOVERNANCE_TOKEN address
+            addresses.addAddress(
+                "PROTOCOL_GOVERNANCE_TOKEN",
+                address(govToken),
+                true
+            );
+        }
+
+        if (!addresses.isAddressSet("PROTOCOL_GOVERNOR")) {
+            // Deploy the GovernorBravoDelegate implementation
+            GovernorBravoDelegate implementation = new GovernorBravoDelegate();
+
+            // Deploy and configure the GovernorBravoDelegator
+            GovernorBravoDelegator governor = new GovernorBravoDelegator(
+                addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"), // timelock
+                addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN"), // governance token
+                deployer, // admin
+                address(implementation), // implementation
+                60, // voting period
+                1, // voting delay
+                1e21 // proposal threshold
+            );
+
+            // Add PROTOCOL_GOVERNOR address
+            addresses.addAddress("PROTOCOL_GOVERNOR", address(governor), true);
+        }
+
+        Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))).queueTransaction(
+            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"),
             0,
             "",
             abi.encodeWithSignature(
                 "setPendingAdmin(address)",
-                address(governor)
+                addresses.getAddress("PROTOCOL_GOVERNOR")
             ),
             block.timestamp + 180
-        );
-
-        // Update PROTOCOL_GOVERNOR address
-        addresses.changeAddress("PROTOCOL_GOVERNOR", address(governor), true);
-
-        // Update PROTOCOL_TIMELOCK_BRAVO address
-        addresses.changeAddress(
-            "PROTOCOL_TIMELOCK_BRAVO",
-            address(timelock),
-            true
-        );
-
-        addresses.changeAddress(
-            "PROTOCOL_GOVERNANCE_TOKEN",
-            address(govToken),
-            true
         );
 
         addresses.printJSONChanges();
@@ -80,7 +87,7 @@ contract DeployGovernorBravo is MultisigProposal {
         super.run();
     }
 
-    function validate() public override {
+    function validate() public view override {
         MockERC20Votes govToken = MockERC20Votes(addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN"));
 
         // ensure governance token is minted to deployer address

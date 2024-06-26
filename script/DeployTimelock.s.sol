@@ -20,27 +20,29 @@ contract DeployTimelock is MultisigProposal {
         // Get proposer and executor addresses
         address dev = addresses.getAddress("DEPLOYER_EOA");
 
-        // Create arrays of addresses to pass to the TimelockController constructor
-        address[] memory proposers = new address[](1);
-        proposers[0] = dev;
-        address[] memory executors = new address[](1);
-        executors[0] = dev;
+        if (!addresses.isAddressSet("GOVERNOR_OZ_GOVERNANCE_TOKEN")) {
+            // Create arrays of addresses to pass to the TimelockController constructor
+            address[] memory proposers = new address[](1);
+            proposers[0] = dev;
+            address[] memory executors = new address[](1);
+            executors[0] = dev;
 
-        // Deploy a new TimelockController
-        TimelockController timelockController = new TimelockController(
-            60,
-            proposers,
-            executors,
-            address(0)
-        );
+            // Deploy a new TimelockController
+            TimelockController timelockController = new TimelockController(
+                60,
+                proposers,
+                executors,
+                address(0)
+            );
 
-        // Change PROTOCOL_TIMELOCK address
-        addresses.changeAddress(
-            "PROTOCOL_TIMELOCK",
-            address(timelockController),
-            true
-        );
-
+            // Add PROTOCOL_TIMELOCK address
+            addresses.addAddress(
+                "PROTOCOL_TIMELOCK",
+                address(timelockController),
+                true
+            );
+        }
+        
         addresses.printJSONChanges();
     }
 
@@ -50,7 +52,7 @@ contract DeployTimelock is MultisigProposal {
         super.run();
     }
 
-    function validate() public override {
+    function validate() public view override {
         TimelockController timelockController = TimelockController(payable(addresses.getAddress("PROTOCOL_TIMELOCK")));
         address dev = addresses.getAddress("DEPLOYER_EOA");
 

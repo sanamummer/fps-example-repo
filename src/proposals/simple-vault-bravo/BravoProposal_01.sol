@@ -73,7 +73,7 @@ contract BravoProposal_01 is GovernorBravoProposal {
         Vault(bravoVault).deposit(token, balance);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         Token token = Token(addresses.getAddress("BRAVO_VAULT_TOKEN"));
 

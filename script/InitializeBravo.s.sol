@@ -25,8 +25,12 @@ contract InitializeBravo is MultisigProposal {
             addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
         );
 
-        // Deploy mock GovernorAlpha
-        address govAlpha = address(new MockGovernorAlpha());
+        if (!addresses.isAddressSet("PROTOCOL_GOVERNOR_ALPHA")) {
+            // Deploy mock GovernorAlpha
+            address govAlpha = address(new MockGovernorAlpha());
+
+            addresses.addAddress("PROTOCOL_GOVERNOR_ALPHA", govAlpha, true);
+        }
 
         Timelock(timelock).executeTransaction(
             timelock,
@@ -40,9 +44,7 @@ contract InitializeBravo is MultisigProposal {
         );
 
         // Initialize GovernorBravo
-        GovernorBravoDelegate(governor)._initiate(govAlpha);
-
-        addresses.changeAddress("PROTOCOL_GOVERNOR_ALPHA", govAlpha, true);
+        GovernorBravoDelegate(governor)._initiate(addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA"));
 
         addresses.printJSONChanges();
     }
@@ -53,7 +55,7 @@ contract InitializeBravo is MultisigProposal {
         super.run();
     }
 
-    function validate() public override {
+    function validate() public view override {
         Timelock timelock = Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")));
 
         // ensure governor bravo is set as timelock admin

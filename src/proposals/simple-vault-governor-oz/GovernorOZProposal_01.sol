@@ -72,7 +72,7 @@ contract GovernorOZProposal_01 is GovernorOZProposal {
         Vault(governorOZVault).deposit(token, balance);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault governorOZVault = Vault(addresses.getAddress("GOVERNOR_OZ_VAULT"));
         Token token = Token(addresses.getAddress("GOVERNOR_OZ_VAULT_TOKEN"));
 

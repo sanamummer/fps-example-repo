@@ -49,7 +49,7 @@ contract TimelockProposal_02 is TimelockProposal {
         _simulateActions(dev, dev);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault timelockVault = Vault(addresses.getAddress("TIMELOCK_VAULT"));
         Token token = Token(addresses.getAddress("TIMELOCK_TOKEN"));
 
