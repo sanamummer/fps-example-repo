@@ -16,16 +16,13 @@ contract MultisigProposal_02 is MultisigProposal {
     }
 
     function run() public override {
-        primaryForkId = vm.createFork("sepolia");
-
-        vm.selectFork(primaryForkId);
+        setPrimaryForkId(vm.createSelectFork("sepolia"));
 
         setAddresses(
             new Addresses(
                 vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))
             )
         );
-        vm.makePersistent(address(addresses));
 
         super.run();
     }
@@ -52,7 +49,7 @@ contract MultisigProposal_02 is MultisigProposal {
         _simulateActions(multisig);
     }
 
-    function validate() public override {
+    function validate() public view override {
         Vault timelockVault = Vault(addresses.getAddress("MULTISIG_VAULT"));
         Token token = Token(addresses.getAddress("MULTISIG_TOKEN"));
         address multisig = addresses.getAddress("DEV_MULTISIG");
