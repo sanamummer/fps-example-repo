@@ -45,7 +45,7 @@ Based on the Arbitrum governance documentation, the proposal creation process is
 ## Proposal Creation Examples Using FPS
 
 We have developed an [ArbitrumProposal.sol](./ArbitrumProposal.sol) contract
-that extends the FPS GovernorOZProposal to showcase the this tool capabilities. FPS
+that extends the FPS OZGovernorProposal to showcase the this tool capabilities. FPS
 allows the creation of declarative proposals that undergo not only code review
 but also integration tests simulating the entire proposal lifecycle. This
 includes L2 submission, L1 settlement, and execution on L1 if is the case, or on
@@ -73,7 +73,7 @@ L2 if the target is an L2 contract.
 -   `getProposalActions`: function used to generate the actions for the
     proposal. In this case, it generates a single action to call the ArbSys
     precompiled contract. This is a utility function that is used by other
-    functions like `simulate` and GovernorOzProposal `getCalldata`.
+    functions like `simulate` and OZGovernorProposal `getCalldata`.
 -   `simulate`: this function is used to simulate the proposal lifecycle from
     scheduling to execution. The first part of the simulation follows the standard OZ Governor proposal path by calling `super.simulate()`. FPS leverages Foundry to simulate proposing, voting, queuing on the L2 timelock, and finally executing. Once the proposal is executed by the L2 Timelock, ArbitrumProposal simulates the L1 settlement by calling the L1 Timelock using the Bridge as the sender to schedule the proposal. Finally, the proposal is executed on L1 and if the target is an L2 contract, the calldata is retrievable from the logs and it's executed on L2, which can be either Arbitrum One or Arbitrum Nova.
 
@@ -96,7 +96,7 @@ We have developed two examples to illustrate how an Arbitrum proposal can be cre
     changes.
 -   `getCalldata`: function used to generate the calldata for submitting the
     proposal. It's not necessary to override this function, as it's already
-    implemented in the GovernorOzProposal contract.
+    implemented in the OZGovernorProposal contract.
 
 When running a proposal through the `forge script`, FPS calls all the functions described above in the following order: `deploy`, `build`, `simulate`, `validate`, and `getCalldata` to ensure the proposal is valid and can be submitted to the Governor. The calldata is printed to the console, and the contracts deployed in the `deploy` function can be broadcasted to the network if needed.
 

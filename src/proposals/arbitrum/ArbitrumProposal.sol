@@ -4,14 +4,14 @@ pragma solidity ^0.8.0;
 import {Vm} from "@forge-std/Vm.sol";
 import {console} from "@forge-std/console.sol";
 
-import {GovernorOZProposal} from "@forge-proposal-simulator/src/proposals/GovernorOZProposal.sol";
+import {OZGovernorProposal} from "@forge-proposal-simulator/src/proposals/OZGovernorProposal.sol";
 import {ITimelockController} from "@forge-proposal-simulator/src/interface/ITimelockController.sol";
 import {Address} from "@forge-proposal-simulator/utils/Address.sol";
 
 import {MockArbSys} from "src/mocks/arbitrum/MockArbSys.sol";
 import {MockArbOutbox} from "src/mocks/arbitrum/MockArbOutbox.sol";
 
-abstract contract ArbitrumProposal is GovernorOZProposal {
+abstract contract ArbitrumProposal is OZGovernorProposal {
     using Address for address;
 
     /// @notice the target address on L1 Timelock when it's a L2 proposal
@@ -166,7 +166,7 @@ abstract contract ArbitrumProposal is GovernorOZProposal {
         arguments[0] = callData;
     }
 
-    /// @notice override the GovernorOZProposal simulate function to handle
+    /// @notice override the OZGovernorProposal simulate function to handle
     ///         the proposal L1 settlement
     function simulate() public override {
         // First part of Arbitrum Governance proposal path follows the OZ

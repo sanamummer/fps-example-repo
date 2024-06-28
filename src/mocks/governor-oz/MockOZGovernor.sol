@@ -7,7 +7,7 @@ import {GovernorCountingSimple} from "@openzeppelin/governance/extensions/Govern
 import {GovernorVotesQuorumFraction} from "@openzeppelin/governance/extensions/GovernorVotesQuorumFraction.sol";
 import {GovernorTimelockControl, TimelockController} from "@openzeppelin/governance/extensions/GovernorTimelockControl.sol";
 
-contract MockGovernorOz is
+contract MockOZGovernor is
     Governor,
     GovernorCountingSimple,
     GovernorVotes,

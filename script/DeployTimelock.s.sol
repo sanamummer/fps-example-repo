@@ -20,7 +20,7 @@ contract DeployTimelock is MultisigProposal {
         // Get proposer and executor addresses
         address dev = addresses.getAddress("DEPLOYER_EOA");
 
-        if (!addresses.isAddressSet("GOVERNOR_OZ_GOVERNANCE_TOKEN")) {
+        if (!addresses.isAddressSet("OZ_GOVERNOR_GOVERNANCE_TOKEN")) {
             // Create arrays of addresses to pass to the TimelockController constructor
             address[] memory proposers = new address[](1);
             proposers[0] = dev;

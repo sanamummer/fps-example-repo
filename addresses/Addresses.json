@@ -81,31 +81,31 @@
         "addr": "0xF1608e08314B546CA2dDC1E4c247ed2ac753a82b", 
         "chainId": 11155111,
         "isContract": true,
-        "name": "GOVERNOR_OZ"
+        "name": "OZ_GOVERNOR"
     },
     {
         "addr": "0xD21a3b1b572F7C38b5e3ff841d1D2903e1B03695", 
         "chainId": 11155111,
         "isContract": true,
-        "name": "GOVERNOR_OZ_TIMELOCK"
+        "name": "OZ_GOVERNOR_TIMELOCK"
     },
     {
         "addr": "0xDefA8533981bb799bb2bC42a6078d5fE8327a822", 
         "chainId": 11155111,
         "isContract": true,
-        "name": "GOVERNOR_OZ_GOVERNANCE_TOKEN"
+        "name": "OZ_GOVERNOR_GOVERNANCE_TOKEN"
     },
     {
         "addr": "0x6fFA4aDB1df78f0Cc127d9BdA946C9E4eBF07C90", 
         "chainId": 11155111,
         "isContract": true,
-        "name": "GOVERNOR_OZ_VAULT"
+        "name": "OZ_GOVERNOR_VAULT"
     },
     {
         "addr": "0x948B7026411CBB9Ef39dB330B31C735b3D06359b", 
         "chainId": 11155111,
         "isContract": true,
-        "name": "GOVERNOR_OZ_VAULT_TOKEN"
+        "name": "OZ_GOVERNOR_VAULT_TOKEN"
     },
     {
         "addr": "0xE6841D92B0C345144506576eC13ECf5103aC7f49",
