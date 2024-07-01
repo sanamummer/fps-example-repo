@@ -17,15 +17,15 @@ contract OZGovernorPostProposalCheck is Test {
 
         string memory output = string(vm.ffi(inputs));
 
-        OZGovernorProposal OZGovernorproposal = OZGovernorProposal(
+        OZGovernorProposal ozGovernorproposal = OZGovernorProposal(
             deployCode(output)
         );
-        vm.makePersistent(address(OZGovernorproposal));
+        vm.makePersistent(address(ozGovernorproposal));
 
         // Execute proposals
-        OZGovernorproposal.run();
+        ozGovernorproposal.run();
 
         // Get the addresses contract
-        addresses = OZGovernorproposal.addresses();
+        addresses = ozGovernorproposal.addresses();
     }
 }

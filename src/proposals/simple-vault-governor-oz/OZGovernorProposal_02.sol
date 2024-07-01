@@ -37,24 +37,24 @@ contract OZGovernorProposal_02 is OZGovernorProposal {
     {
         /// STATICCALL -- not recorded for the run stage
         address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
-        Vault OZGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
         address token = addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN");
-        (uint256 amount, ) = OZGovernorVault.deposits(address(token), timelock);
+        (uint256 amount, ) = ozGovernorVault.deposits(address(token), timelock);
 
         /// CALLS -- mutative and recorded
-        OZGovernorVault.withdraw(token, payable(timelock), amount);
+        ozGovernorVault.withdraw(token, payable(timelock), amount);
     }
 
     function validate() public view override {
-        Vault OZGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
         Token token = Token(addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN"));
 
         address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
 
-        uint256 balance = token.balanceOf(address(OZGovernorVault));
+        uint256 balance = token.balanceOf(address(ozGovernorVault));
         assertEq(balance, 0);
 
-        (uint256 amount, ) = OZGovernorVault.deposits(
+        (uint256 amount, ) = ozGovernorVault.deposits(
             address(token),
             address(timelock)
         );
