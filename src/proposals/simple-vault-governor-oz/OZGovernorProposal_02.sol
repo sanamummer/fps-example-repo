@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-import {GovernorOZProposal} from "@forge-proposal-simulator/src/proposals/GovernorOZProposal.sol";
+import {OZGovernorProposal} from "@forge-proposal-simulator/src/proposals/OZGovernorProposal.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
 
 import {Vault} from "src/mocks/vault/Vault.sol";
 import {Token} from "src/mocks/vault/Token.sol";
 
-contract GovernorOZProposal_02 is GovernorOZProposal {
+contract OZGovernorProposal_02 is OZGovernorProposal {
     function name() public pure override returns (string memory) {
-        return "GOVERNOR_OZ_PROPOSAL_02";
+        return "OZ_GOVERNOR_PROPOSAL_02";
     }
 
     function description() public pure override returns (string memory) {
-        return "Governor oz proposal mock 2";
+        return "OZ Governor proposal mock 2";
     }
 
     function run() public override {
@@ -25,7 +25,7 @@ contract GovernorOZProposal_02 is GovernorOZProposal {
             )
         );
 
-        setGovernor(addresses.getAddress("GOVERNOR_OZ"));
+        setGovernor(addresses.getAddress("OZ_GOVERNOR"));
 
         super.run();
     }
@@ -33,28 +33,28 @@ contract GovernorOZProposal_02 is GovernorOZProposal {
     function build()
         public
         override
-        buildModifier(addresses.getAddress("GOVERNOR_OZ_TIMELOCK"))
+        buildModifier(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))
     {
         /// STATICCALL -- not recorded for the run stage
-        address timelock = addresses.getAddress("GOVERNOR_OZ_TIMELOCK");
-        Vault governorOZVault = Vault(addresses.getAddress("GOVERNOR_OZ_VAULT"));
-        address token = addresses.getAddress("GOVERNOR_OZ_VAULT_TOKEN");
-        (uint256 amount, ) = governorOZVault.deposits(address(token), timelock);
+        address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
+        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        address token = addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN");
+        (uint256 amount, ) = ozGovernorVault.deposits(address(token), timelock);
 
         /// CALLS -- mutative and recorded
-        governorOZVault.withdraw(token, payable(timelock), amount);
+        ozGovernorVault.withdraw(token, payable(timelock), amount);
     }
 
     function validate() public view override {
-        Vault governorOZVault = Vault(addresses.getAddress("GOVERNOR_OZ_VAULT"));
-        Token token = Token(addresses.getAddress("GOVERNOR_OZ_VAULT_TOKEN"));
+        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        Token token = Token(addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN"));
 
-        address timelock = addresses.getAddress("GOVERNOR_OZ_TIMELOCK");
+        address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
 
-        uint256 balance = token.balanceOf(address(governorOZVault));
+        uint256 balance = token.balanceOf(address(ozGovernorVault));
         assertEq(balance, 0);
 
-        (uint256 amount, ) = governorOZVault.deposits(
+        (uint256 amount, ) = ozGovernorVault.deposits(
             address(token),
             address(timelock)
         );
