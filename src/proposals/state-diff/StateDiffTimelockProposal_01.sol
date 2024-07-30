@@ -2,13 +2,11 @@ pragma solidity ^0.8.0;
 
 import {TimelockProposal} from "@forge-proposal-simulator/src/proposals/TimelockProposal.sol";
 import {Addresses} from "@forge-proposal-simulator/addresses/Addresses.sol";
-import {TimelockController} from "@openzeppelin/governance/TimelockController.sol";
 
-import {Vault} from "src/mocks/vault/Vault.sol";
 import {Token} from "src/mocks/vault/Token.sol";
 import {TokenWrapper} from "src/mocks/state-diff/TokenWrapper.sol";
 
-contract StateDiffTimelockProposal is TimelockProposal {
+contract StateDiffTimelockProposal_01 is TimelockProposal {
     function name() public pure override returns (string memory) {
         return "STATE_DIFF_TIMELOCK_MOCK";
     }
