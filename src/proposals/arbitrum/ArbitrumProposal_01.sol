@@ -9,10 +9,7 @@ import {MockProxyUpgradeAction} from "src/mocks/arbitrum/MockProxyUpgradeAction.
 import {ArbitrumProposal} from "./ArbitrumProposal.sol";
 
 interface IUpgradeExecutor {
-    function execute(
-        address upgrader,
-        bytes memory upgradeCalldata
-    ) external payable;
+    function execute(address upgrader, bytes memory upgradeCalldata) external payable;
 }
 
 /// @title ArbitrumProposal_01
@@ -31,9 +28,7 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
     }
 
     function run() public override {
-        addresses = new Addresses(
-            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        );
+        addresses = new Addresses(vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json")));
         vm.makePersistent(address(addresses));
 
         setPrimaryForkId(vm.createFork("arbitrum"));
@@ -48,16 +43,10 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
     }
 
     function deploy() public override {
-        if (
-            !addresses.isAddressSet("ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION")
-        ) {
+        if (!addresses.isAddressSet("ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION")) {
             address mockUpgrade = address(new MockUpgrade());
 
-            addresses.addAddress(
-                "ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION",
-                mockUpgrade,
-                true
-            );
+            addresses.addAddress("ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION", mockUpgrade, true);
         }
 
         if (!addresses.isAddressSet("PROXY_UPGRADE_ACTION")) {
@@ -66,14 +55,8 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
         }
     }
 
-    function build()
-        public
-        override
-        buildModifier(addresses.getAddress("ARBITRUM_ALIASED_L1_TIMELOCK"))
-    {
-        IUpgradeExecutor upgradeExecutor = IUpgradeExecutor(
-            addresses.getAddress("ARBITRUM_L2_UPGRADE_EXECUTOR")
-        );
+    function build() public override buildModifier(addresses.getAddress("ARBITRUM_ALIASED_L1_TIMELOCK")) {
+        IUpgradeExecutor upgradeExecutor = IUpgradeExecutor(addresses.getAddress("ARBITRUM_L2_UPGRADE_EXECUTOR"));
 
         upgradeExecutor.execute(
             addresses.getAddress("PROXY_UPGRADE_ACTION"),
@@ -87,15 +70,12 @@ contract ArbitrumProposal_01 is ArbitrumProposal {
     }
 
     function validate() public override {
-        IProxy proxy = IProxy(
-            addresses.getAddress("ARBITRUM_L2_WETH_GATEWAY_PROXY")
-        );
+        IProxy proxy = IProxy(addresses.getAddress("ARBITRUM_L2_WETH_GATEWAY_PROXY"));
 
         // implementation() caller must be the owner
         vm.startPrank(addresses.getAddress("ARBITRUM_L2_PROXY_ADMIN"));
         require(
-            proxy.implementation() ==
-                addresses.getAddress("ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION"),
+            proxy.implementation() == addresses.getAddress("ARBITRUM_L2_WETH_GATEWAY_IMPLEMENTATION"),
             "Proxy implementation not set"
         );
         vm.stopPrank();

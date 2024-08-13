@@ -59,7 +59,9 @@ contract DeployOZGovernor is MultisigProposal {
         }
 
         // add propose and execute role for governor
-        TimelockController(payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))).grantRole(keccak256("PROPOSER_ROLE"), addresses.getAddress("OZ_GOVERNOR"));
+        TimelockController(payable(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))).grantRole(
+            keccak256("PROPOSER_ROLE"), addresses.getAddress("OZ_GOVERNOR")
+        );
 
         addresses.printJSONChanges();
     }
