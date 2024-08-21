@@ -28,21 +28,12 @@ contract DeployTimelock is MultisigProposal {
             executors[0] = dev;
 
             // Deploy a new TimelockController
-            TimelockController timelockController = new TimelockController(
-                60,
-                proposers,
-                executors,
-                address(0)
-            );
+            TimelockController timelockController = new TimelockController(60, proposers, executors, address(0));
 
             // Add PROTOCOL_TIMELOCK address
-            addresses.addAddress(
-                "PROTOCOL_TIMELOCK",
-                address(timelockController),
-                true
-            );
+            addresses.addAddress("PROTOCOL_TIMELOCK", address(timelockController), true);
         }
-        
+
         addresses.printJSONChanges();
     }
 

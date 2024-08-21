@@ -15,19 +15,16 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
     using Address for address;
 
     /// @notice the target address on L1 Timelock when it's a L2 proposal
-    address private constant RETRYABLE_TICKET_MAGIC =
-        0xa723C008e76E379c55599D2E4d93879BeaFDa79C;
+    address private constant RETRYABLE_TICKET_MAGIC = 0xa723C008e76E379c55599D2E4d93879BeaFDa79C;
 
     /// @notice minimum delay for the Arbitrum L1 timelock
     uint256 private constant minDelay = 3 days;
 
     /// @notice Arbitrum One inbox address on mainnet
-    address private constant arbOneInbox =
-        0x4Dbd4fc535Ac27206064B68FfCf827b0A60BAB3f;
+    address private constant arbOneInbox = 0x4Dbd4fc535Ac27206064B68FfCf827b0A60BAB3f;
 
     /// @notice Arbitrum Nova inbox address on mainnet
-    address private constant arbNovaInbox =
-        0xc4448b71118c9071Bcb9734A0EAc55D18A153949;
+    address private constant arbNovaInbox = 0xc4448b71118c9071Bcb9734A0EAc55D18A153949;
 
     enum ProposalExecutionChain {
         ETH,
@@ -53,11 +50,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
         vm.selectFork(ethForkId);
         address mockOutbox = address(new MockArbOutbox());
 
-        vm.store(
-            addresses.getAddress("ARBITRUM_BRIDGE"),
-            bytes32(uint256(5)),
-            bytes32(uint256(uint160(mockOutbox)))
-        );
+        vm.store(addresses.getAddress("ARBITRUM_BRIDGE"), bytes32(uint256(5)), bytes32(uint256(uint160(mockOutbox))));
 
         vm.selectFork(primaryForkId);
 
@@ -71,16 +64,12 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
     function _validateActions() internal view override {
         uint256 actionsLength = actions.length;
 
-        require(
-            actionsLength == 1,
-            "Arbitrum proposals must have a single action"
-        );
+        require(actionsLength == 1, "Arbitrum proposals must have a single action");
 
         require(actions[0].target != address(0), "Invalid target for proposal");
         /// if there are no args and no eth, the action is not valid
         require(
-            (actions[0].arguments.length == 0 && actions[0].value > 0) ||
-                actions[0].arguments.length > 0,
+            (actions[0].arguments.length == 0 && actions[0].value > 0) || actions[0].arguments.length > 0,
             "Invalid arguments for proposal"
         );
 
@@ -92,11 +81,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
 
     /// @notice get the calldata to schedule the timelock on L1
     ///         the L1 schedule calldata must be the calldata for all arbitrum proposals
-    function getScheduleTimelockCaldata()
-        public
-        view
-        returns (bytes memory scheduleCalldata)
-    {
+    function getScheduleTimelockCaldata() public view returns (bytes memory scheduleCalldata) {
         // address only used if is a L2 proposal
         address inbox;
 
@@ -111,21 +96,19 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
             // if the action is to be executed on l1, the target is the actual
             // target, otherwise it is the magic value that tells that the
             // proposal must be relayed back to l2
-            executionChain == ProposalExecutionChain.ETH
-                ? actions[0].target
-                : RETRYABLE_TICKET_MAGIC, // target
+            executionChain == ProposalExecutionChain.ETH ? actions[0].target : RETRYABLE_TICKET_MAGIC, // target
             actions[0].value, // value
             executionChain == ProposalExecutionChain.ETH
                 ? actions[0].arguments
                 : abi.encode( // these are the retryable data params
-                        // the inbox we want to use, should be arb one or nova
-                        inbox,
-                        addresses.getAddress("ARBITRUM_L2_UPGRADE_EXECUTOR"), // the upgrade executor on the l2 network
-                        0, // no value in this upgrade
-                        0, // max gas - will be filled in when the retryable is actually executed
-                        0, // max fee per gas - will be filled in when the retryable is actually executed
-                        actions[0].arguments // calldata created on the build function
-                    ),
+                    // the inbox we want to use, should be arb one or nova
+                    inbox,
+                    addresses.getAddress("ARBITRUM_L2_UPGRADE_EXECUTOR"), // the upgrade executor on the l2 network
+                    0, // no value in this upgrade
+                    0, // max gas - will be filled in when the retryable is actually executed
+                    0, // max fee per gas - will be filled in when the retryable is actually executed
+                    actions[0].arguments // calldata created on the build function
+                ),
             bytes32(0), // no predecessor
             keccak256(abi.encodePacked(description())), // salt is prop description
             minDelay // delay for this proposal
@@ -139,11 +122,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
         public
         view
         override
-        returns (
-            address[] memory targets,
-            uint256[] memory values,
-            bytes[] memory arguments
-        )
+        returns (address[] memory targets, uint256[] memory values, bytes[] memory arguments)
     {
         _validateActions();
 
@@ -155,9 +134,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
         arguments = new bytes[](1);
 
         bytes memory callData = abi.encodeWithSelector(
-            MockArbSys.sendTxToL1.selector,
-            addresses.getAddress("ARBITRUM_L1_TIMELOCK", 1),
-            innerCalldata
+            MockArbSys.sendTxToL1.selector, addresses.getAddress("ARBITRUM_L1_TIMELOCK", 1), innerCalldata
         );
 
         // Arbitrum proposals target must be the ArbSys precompiled address
@@ -183,9 +160,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
         // prank as the bridge
         vm.startPrank(addresses.getAddress("ARBITRUM_BRIDGE"));
 
-        address l1TimelockAddress = addresses.getAddress(
-            "ARBITRUM_L1_TIMELOCK"
-        );
+        address l1TimelockAddress = addresses.getAddress("ARBITRUM_L1_TIMELOCK");
 
         ITimelockController timelock = ITimelockController(l1TimelockAddress);
 
@@ -206,10 +181,8 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
             Vm.Log[] memory entries = vm.getRecordedLogs();
 
             // Get the execute parameters from schedule call logs
-            (target, value, data, predecessor, ) = abi.decode(
-                entries[0].data,
-                (address, uint256, bytes, bytes32, uint256)
-            );
+            (target, value, data, predecessor,) =
+                abi.decode(entries[0].data, (address, uint256, bytes, bytes32, uint256));
 
             // warp to the future to execute the proposal
             vm.warp(block.timestamp + minDelay);
@@ -222,13 +195,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
             vm.recordLogs();
 
             // execute the proposal
-            timelock.execute(
-                target,
-                value,
-                data,
-                predecessor,
-                keccak256(abi.encodePacked(description()))
-            );
+            timelock.execute(target, value, data, predecessor, keccak256(abi.encodePacked(description())));
 
             // Stop recording logs
             Vm.Log[] memory entries = vm.getRecordedLogs();
