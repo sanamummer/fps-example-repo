@@ -48,7 +48,7 @@ abstract contract ArbitrumProposal is OZGovernorProposal {
 
     /// @notice mock arb sys precompiled contract on L2
     ///         mock outbox on mainnet
-    function afterDeployMock() public override {
+    function preBuildMock() public override {
         // switch to mainnet fork to mock arb outbox
         vm.selectFork(ethForkId);
         address mockOutbox = address(new MockArbOutbox());

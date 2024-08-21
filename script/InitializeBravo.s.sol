@@ -50,7 +50,13 @@ contract InitializeBravo is MultisigProposal {
     }
 
     function run() public override {
-        setAddresses(new Addresses("./addresses/Addresses.json"));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(
+            new Addresses(addressesFolderPath, chainIds)
+        );
 
         super.run();
     }

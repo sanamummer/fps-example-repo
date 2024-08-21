@@ -19,10 +19,12 @@ contract OZGovernorProposal_01 is OZGovernorProposal {
     function run() public override {
         setPrimaryForkId(vm.createSelectFork("sepolia"));
 
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
         setAddresses(
-            new Addresses(
-                vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))
-            )
+            new Addresses(addressesFolderPath, chainIds)
         );
 
         setGovernor(addresses.getAddress("OZ_GOVERNOR"));

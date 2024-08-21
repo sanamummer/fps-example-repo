@@ -31,9 +31,11 @@ contract ArbitrumProposal_02 is ArbitrumProposal {
     }
 
     function run() public override {
-        addresses = new Addresses(
-            vm.envOr("ADDRESSES_PATH", string("./addresses/Addresses.json"))
-        );
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](2);
+        chainIds[0] = 1;
+        chainIds[1] = 42161;
+        addresses = new Addresses(addressesFolderPath, chainIds);
         vm.makePersistent(address(addresses));
 
         setPrimaryForkId(vm.createFork("arbitrum"));
