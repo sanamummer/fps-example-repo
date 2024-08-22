@@ -17,7 +17,12 @@ contract MockOZGovernor is
     constructor(
         IVotes _token,
         TimelockController _timelock
-    ) Governor("MyGovernor") GovernorVotes(_token) GovernorVotesQuorumFraction(4) GovernorTimelockControl(_timelock) {}
+    )
+        Governor("MyGovernor")
+        GovernorVotes(_token)
+        GovernorVotesQuorumFraction(4)
+        GovernorTimelockControl(_timelock)
+    {}
 
     function votingDelay() public pure override returns (uint256) {
         return 1; // 12 secs
@@ -33,7 +38,12 @@ contract MockOZGovernor is
 
     function state(
         uint256 proposalId
-    ) public view override(Governor, GovernorTimelockControl) returns (ProposalState) {
+    )
+        public
+        view
+        override(Governor, GovernorTimelockControl)
+        returns (ProposalState)
+    {
         return super.state(proposalId);
     }
 
@@ -56,7 +66,12 @@ contract MockOZGovernor is
         return super._cancel(targets, values, calldatas, descriptionHash);
     }
 
-    function _executor() internal view override(Governor, GovernorTimelockControl) returns (address) {
+    function _executor()
+        internal
+        view
+        override(Governor, GovernorTimelockControl)
+        returns (address)
+    {
         return super._executor();
     }
 

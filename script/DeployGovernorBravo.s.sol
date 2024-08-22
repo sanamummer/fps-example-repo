@@ -36,7 +36,10 @@ contract DeployGovernorBravo is MultisigProposal {
 
         if (!addresses.isAddressSet("PROTOCOL_GOVERNANCE_TOKEN")) {
             // Deploy the governance token
-            MockERC20Votes govToken = new MockERC20Votes("Governance Token", "GOV");
+            MockERC20Votes govToken = new MockERC20Votes(
+                "Governance Token",
+                "GOV"
+            );
 
             govToken.mint(deployer, 1e21);
 
@@ -67,16 +70,17 @@ contract DeployGovernorBravo is MultisigProposal {
             addresses.addAddress("PROTOCOL_GOVERNOR", address(governor), true);
         }
 
-        Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))).queueTransaction(
-            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"),
-            0,
-            "",
-            abi.encodeWithSignature(
-                "setPendingAdmin(address)",
-                addresses.getAddress("PROTOCOL_GOVERNOR")
-            ),
-            block.timestamp + 180
-        );
+        Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")))
+            .queueTransaction(
+                addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"),
+                0,
+                "",
+                abi.encodeWithSignature(
+                    "setPendingAdmin(address)",
+                    addresses.getAddress("PROTOCOL_GOVERNOR")
+                ),
+                block.timestamp + 180
+            );
 
         addresses.printJSONChanges();
     }
@@ -86,17 +90,20 @@ contract DeployGovernorBravo is MultisigProposal {
         uint256[] memory chainIds = new uint256[](1);
         chainIds[0] = 11155111;
 
-        setAddresses(
-            new Addresses(addressesFolderPath, chainIds)
-        );
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         super.run();
     }
 
     function validate() public view override {
-        MockERC20Votes govToken = MockERC20Votes(addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN"));
+        MockERC20Votes govToken = MockERC20Votes(
+            addresses.getAddress("PROTOCOL_GOVERNANCE_TOKEN")
+        );
 
         // ensure governance token is minted to deployer address
-        assertEq(govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")), 1e21);
+        assertEq(
+            govToken.balanceOf(addresses.getAddress("DEPLOYER_EOA")),
+            1e21
+        );
     }
 }

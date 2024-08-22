@@ -9,8 +9,12 @@ import {OZGovernorPostProposalCheck} from "./OZGovernorPostProposalCheck.sol";
 // and to work with newly deployed contracts, if applicable.
 contract OZGovernorVaultIntegrationTestSepolia is OZGovernorPostProposalCheck {
     function test_addTokenToWhitelist() public {
-        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
-        address ozGovernorTimelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
+        Vault ozGovernorVault = Vault(
+            addresses.getAddress("OZ_GOVERNOR_VAULT")
+        );
+        address ozGovernorTimelock = addresses.getAddress(
+            "OZ_GOVERNOR_TIMELOCK"
+        );
         Token token = new Token();
 
         vm.prank(ozGovernorTimelock);
@@ -24,10 +28,19 @@ contract OZGovernorVaultIntegrationTestSepolia is OZGovernorPostProposalCheck {
     }
 
     function test_depositToVault() public {
-        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
-        address ozGovernorTimelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
-        address governanceToken = addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN");
-        (uint256 prevDeposit, ) = ozGovernorVault.deposits(governanceToken, ozGovernorTimelock);
+        Vault ozGovernorVault = Vault(
+            addresses.getAddress("OZ_GOVERNOR_VAULT")
+        );
+        address ozGovernorTimelock = addresses.getAddress(
+            "OZ_GOVERNOR_TIMELOCK"
+        );
+        address governanceToken = addresses.getAddress(
+            "OZ_GOVERNOR_VAULT_TOKEN"
+        );
+        (uint256 prevDeposit, ) = ozGovernorVault.deposits(
+            governanceToken,
+            ozGovernorTimelock
+        );
         uint256 depositAmount = 100;
 
         vm.startPrank(ozGovernorTimelock);
@@ -35,7 +48,10 @@ contract OZGovernorVaultIntegrationTestSepolia is OZGovernorPostProposalCheck {
         Token(governanceToken).approve(address(ozGovernorVault), depositAmount);
         ozGovernorVault.deposit(address(governanceToken), depositAmount);
 
-        (uint256 amount, ) = ozGovernorVault.deposits(governanceToken, ozGovernorTimelock);
+        (uint256 amount, ) = ozGovernorVault.deposits(
+            governanceToken,
+            ozGovernorTimelock
+        );
         assertTrue(
             amount == (prevDeposit + depositAmount),
             "Token should be deposited"

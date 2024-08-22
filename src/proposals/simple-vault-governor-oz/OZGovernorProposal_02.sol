@@ -23,9 +23,7 @@ contract OZGovernorProposal_02 is OZGovernorProposal {
         uint256[] memory chainIds = new uint256[](1);
         chainIds[0] = 11155111;
 
-        setAddresses(
-            new Addresses(addressesFolderPath, chainIds)
-        );
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         setGovernor(addresses.getAddress("OZ_GOVERNOR"));
 
@@ -39,7 +37,9 @@ contract OZGovernorProposal_02 is OZGovernorProposal {
     {
         /// STATICCALL -- not recorded for the run stage
         address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
-        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        Vault ozGovernorVault = Vault(
+            addresses.getAddress("OZ_GOVERNOR_VAULT")
+        );
         address token = addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN");
         (uint256 amount, ) = ozGovernorVault.deposits(address(token), timelock);
 
@@ -48,7 +48,9 @@ contract OZGovernorProposal_02 is OZGovernorProposal {
     }
 
     function validate() public view override {
-        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        Vault ozGovernorVault = Vault(
+            addresses.getAddress("OZ_GOVERNOR_VAULT")
+        );
         Token token = Token(addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN"));
 
         address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");

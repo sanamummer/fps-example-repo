@@ -22,9 +22,7 @@ contract MultisigProposal_02 is MultisigProposal {
         uint256[] memory chainIds = new uint256[](1);
         chainIds[0] = 11155111;
 
-        setAddresses(
-            new Addresses(addressesFolderPath, chainIds)
-        );
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         super.run();
     }

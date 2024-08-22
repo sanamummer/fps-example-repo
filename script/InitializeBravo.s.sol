@@ -44,7 +44,9 @@ contract InitializeBravo is MultisigProposal {
         );
 
         // Initialize GovernorBravo
-        GovernorBravoDelegate(governor)._initiate(addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA"));
+        GovernorBravoDelegate(governor)._initiate(
+            addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA")
+        );
 
         addresses.printJSONChanges();
     }
@@ -54,15 +56,15 @@ contract InitializeBravo is MultisigProposal {
         uint256[] memory chainIds = new uint256[](1);
         chainIds[0] = 11155111;
 
-        setAddresses(
-            new Addresses(addressesFolderPath, chainIds)
-        );
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         super.run();
     }
 
     function validate() public view override {
-        Timelock timelock = Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")));
+        Timelock timelock = Timelock(
+            payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
+        );
 
         // ensure governor bravo is set as timelock admin
         assertEq(timelock.admin(), addresses.getAddress("PROTOCOL_GOVERNOR"));
