@@ -19,7 +19,11 @@ contract OZGovernorProposal_01 is OZGovernorProposal {
     function run() public override {
         setPrimaryForkId(vm.createSelectFork("sepolia"));
 
-        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         setGovernor(addresses.getAddress("OZ_GOVERNOR"));
 
@@ -31,13 +35,21 @@ contract OZGovernorProposal_01 is OZGovernorProposal {
         if (!addresses.isAddressSet("OZ_GOVERNOR_VAULT")) {
             Vault ozGovernorVault = new Vault();
 
-            addresses.addAddress("OZ_GOVERNOR_VAULT", address(ozGovernorVault), true);
+            addresses.addAddress(
+                "OZ_GOVERNOR_VAULT",
+                address(ozGovernorVault),
+                true
+            );
             ozGovernorVault.transferOwnership(owner);
         }
 
         if (!addresses.isAddressSet("OZ_GOVERNOR_VAULT_TOKEN")) {
             Token token = new Token();
-            addresses.addAddress("OZ_GOVERNOR_VAULT_TOKEN", address(token), true);
+            addresses.addAddress(
+                "OZ_GOVERNOR_VAULT_TOKEN",
+                address(token),
+                true
+            );
             token.transferOwnership(owner);
 
             // During forge script execution, the deployer of the contracts is
@@ -50,11 +62,17 @@ contract OZGovernorProposal_01 is OZGovernorProposal {
         }
     }
 
-    function build() public override buildModifier(addresses.getAddress("OZ_GOVERNOR_TIMELOCK")) {
+    function build()
+        public
+        override
+        buildModifier(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"))
+    {
         /// STATICCALL -- not recorded for the run stage
         address ozGovernorVault = addresses.getAddress("OZ_GOVERNOR_VAULT");
         address token = addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN");
-        uint256 balance = Token(token).balanceOf(addresses.getAddress("OZ_GOVERNOR_TIMELOCK"));
+        uint256 balance = Token(token).balanceOf(
+            addresses.getAddress("OZ_GOVERNOR_TIMELOCK")
+        );
 
         /// CALLS -- mutative and recorded
         Vault(ozGovernorVault).whitelistToken(token, true);
@@ -63,18 +81,26 @@ contract OZGovernorProposal_01 is OZGovernorProposal {
     }
 
     function validate() public view override {
-        Vault ozGovernorVault = Vault(addresses.getAddress("OZ_GOVERNOR_VAULT"));
+        Vault ozGovernorVault = Vault(
+            addresses.getAddress("OZ_GOVERNOR_VAULT")
+        );
         Token token = Token(addresses.getAddress("OZ_GOVERNOR_VAULT_TOKEN"));
 
         address timelock = addresses.getAddress("OZ_GOVERNOR_TIMELOCK");
 
         uint256 balance = token.balanceOf(address(ozGovernorVault));
-        (uint256 amount,) = ozGovernorVault.deposits(address(token), address(timelock));
+        (uint256 amount, ) = ozGovernorVault.deposits(
+            address(token),
+            address(timelock)
+        );
         assertEq(amount, balance);
 
         assertTrue(ozGovernorVault.tokenWhitelist(address(token)));
 
-        assertEq(token.balanceOf(address(ozGovernorVault)), token.totalSupply());
+        assertEq(
+            token.balanceOf(address(ozGovernorVault)),
+            token.totalSupply()
+        );
 
         assertEq(token.totalSupply(), 10_000_000e18);
 

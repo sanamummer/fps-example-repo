@@ -23,7 +23,13 @@ contract GovernorBravoEvents {
      * @param votes Number of votes which were cast by the voter
      * @param reason The reason given for the vote by the voter
      */
-    event VoteCast(address indexed voter, uint256 proposalId, uint8 support, uint256 votes, string reason);
+    event VoteCast(
+        address indexed voter,
+        uint256 proposalId,
+        uint8 support,
+        uint256 votes,
+        string reason
+    );
 
     /// @notice An event emitted when a proposal has been canceled
     event ProposalCanceled(uint256 id);
@@ -41,10 +47,16 @@ contract GovernorBravoEvents {
     event VotingPeriodSet(uint256 oldVotingPeriod, uint256 newVotingPeriod);
 
     /// @notice Emitted when implementation is changed
-    event NewImplementation(address oldImplementation, address newImplementation);
+    event NewImplementation(
+        address oldImplementation,
+        address newImplementation
+    );
 
     /// @notice Emitted when proposal threshold is set
-    event ProposalThresholdSet(uint256 oldProposalThreshold, uint256 newProposalThreshold);
+    event ProposalThresholdSet(
+        uint256 oldProposalThreshold,
+        uint256 newProposalThreshold
+    );
 
     /// @notice Emitted when pendingAdmin is changed
     event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);
@@ -162,7 +174,8 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
 contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
     /// @notice Stores the expiration of account whitelist status as a timestamp
-    mapping(address account => uint256 expiration) public whitelistAccountExpirations;
+    mapping(address account => uint256 expiration)
+        public whitelistAccountExpirations;
 
     /// @notice Address which manages whitelisted proposals and whitelist accounts
     address public whitelistGuardian;
@@ -197,7 +210,10 @@ interface TimelockInterface {
 }
 
 interface CompInterface {
-    function getPriorVotes(address account, uint256 blockNumber) external view returns (uint96);
+    function getPriorVotes(
+        address account,
+        uint256 blockNumber
+    ) external view returns (uint96);
 }
 
 interface GovernorAlphaInterface {

@@ -18,7 +18,11 @@ contract StateDiffTimelockProposal_01 is TimelockProposal {
     function run() public override {
         setPrimaryForkId(vm.createSelectFork("sepolia"));
 
-        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         setTimelock(addresses.getAddress("PROTOCOL_TIMELOCK"));
 
@@ -48,12 +52,21 @@ contract StateDiffTimelockProposal_01 is TimelockProposal {
         tokenWrapper.transferOwnership(timelock);
     }
 
-    function build() public override buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK")) {
-        TokenWrapper tokenWrapper = TokenWrapper(addresses.getAddress("TOKEN_WRAPPER"));
+    function build()
+        public
+        override
+        buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK"))
+    {
+        TokenWrapper tokenWrapper = TokenWrapper(
+            addresses.getAddress("TOKEN_WRAPPER")
+        );
         tokenWrapper.mint{value: 10 ether}();
 
         // approve token wrapper to transfer token
-        Token(addresses.getAddress("TOKEN")).approve(address(tokenWrapper), 10 ether);
+        Token(addresses.getAddress("TOKEN")).approve(
+            address(tokenWrapper),
+            10 ether
+        );
         tokenWrapper.redeemTokens(10 ether);
     }
 

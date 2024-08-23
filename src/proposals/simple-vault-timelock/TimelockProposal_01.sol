@@ -18,7 +18,11 @@ contract TimelockProposal_01 is TimelockProposal {
     function run() public override {
         setPrimaryForkId(vm.createSelectFork("sepolia"));
 
-        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         setTimelock(addresses.getAddress("PROTOCOL_TIMELOCK"));
 
@@ -29,7 +33,11 @@ contract TimelockProposal_01 is TimelockProposal {
         if (!addresses.isAddressSet("TIMELOCK_VAULT")) {
             Vault timelockVault = new Vault();
 
-            addresses.addAddress("TIMELOCK_VAULT", address(timelockVault), true);
+            addresses.addAddress(
+                "TIMELOCK_VAULT",
+                address(timelockVault),
+                true
+            );
 
             timelockVault.transferOwnership(address(timelock));
         }
@@ -74,7 +82,10 @@ contract TimelockProposal_01 is TimelockProposal {
         Token token = Token(addresses.getAddress("TIMELOCK_TOKEN"));
 
         uint256 balance = token.balanceOf(address(timelockVault));
-        (uint256 amount,) = timelockVault.deposits(address(token), address(timelock));
+        (uint256 amount, ) = timelockVault.deposits(
+            address(token),
+            address(timelock)
+        );
         assertEq(amount, balance);
 
         assertTrue(timelockVault.tokenWhitelist(address(token)));

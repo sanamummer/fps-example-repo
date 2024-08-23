@@ -21,7 +21,9 @@ contract InitializeBravo is MultisigProposal {
     function deploy() public override {
         address governor = addresses.getAddress("PROTOCOL_GOVERNOR");
 
-        address payable timelock = payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"));
+        address payable timelock = payable(
+            addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")
+        );
 
         if (!addresses.isAddressSet("PROTOCOL_GOVERNOR_ALPHA")) {
             // Deploy mock GovernorAlpha
@@ -31,23 +33,38 @@ contract InitializeBravo is MultisigProposal {
         }
 
         Timelock(timelock).executeTransaction(
-            timelock, 0, "", abi.encodeWithSignature("setPendingAdmin(address)", address(governor)), vm.envUint("ETA")
+            timelock,
+            0,
+            "",
+            abi.encodeWithSignature(
+                "setPendingAdmin(address)",
+                address(governor)
+            ),
+            vm.envUint("ETA")
         );
 
         // Initialize GovernorBravo
-        GovernorBravoDelegate(governor)._initiate(addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA"));
+        GovernorBravoDelegate(governor)._initiate(
+            addresses.getAddress("PROTOCOL_GOVERNOR_ALPHA")
+        );
 
         addresses.printJSONChanges();
     }
 
     function run() public override {
-        setAddresses(new Addresses("./addresses/Addresses.json"));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         super.run();
     }
 
     function validate() public view override {
-        Timelock timelock = Timelock(payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")));
+        Timelock timelock = Timelock(
+            payable(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
+        );
 
         // ensure governor bravo is set as timelock admin
         assertEq(timelock.admin(), addresses.getAddress("PROTOCOL_GOVERNOR"));

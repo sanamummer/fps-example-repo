@@ -1,0 +1,42 @@
+[
+    {
+        "addr": "0x34d45e99f7D8c45ed05B5cA72D54bbD1fb3F98f0",
+        "name": "ARBITRUM_L2_TIMELOCK",
+        "isContract": true
+    },
+    {
+        "addr": "0xCF57572261c7c2BCF21ffD220ea7d1a27D40A827",
+        "name": "ARBITRUM_L2_UPGRADE_EXECUTOR",
+        "isContract": true
+    },
+    {
+        "addr": "0xd570aCE65C43af47101fC6250FD6fC63D1c22a86",
+        "name": "ARBITRUM_L2_PROXY_ADMIN",
+        "isContract": true
+    },
+    {
+        "addr": "0x6c411aD3E74De3E7Bd422b94A27770f5B86C623B",
+        "name": "ARBITRUM_L2_WETH_GATEWAY_PROXY",
+        "isContract": true
+    },
+    {
+        "addr": "0xf07DeD9dC292157749B6Fd268E37DF6EA38395B9",
+        "name": "ARBITRUM_L2_CORE_GOVERNOR",
+        "isContract": true
+    },
+    {
+        "addr": "0x0000000000000000000000000000000000000064",
+        "name": "ARBITRUM_SYS",
+        "isContract": true
+    },
+    {
+        "addr": "0xf7951D92B0C345144506576eC13Ecf5103aC905a",
+        "name": "ARBITRUM_ALIASED_L1_TIMELOCK",
+        "isContract": false
+    },
+    {
+        "addr": "0x2c9c0F10E3F8820544522df210dFb0A2BbC75147",
+        "name": "DEPLOYER_EOA",
+        "isContract": false
+    }
+]

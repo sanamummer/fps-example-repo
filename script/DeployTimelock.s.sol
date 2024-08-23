@@ -28,29 +28,48 @@ contract DeployTimelock is MultisigProposal {
             executors[0] = dev;
 
             // Deploy a new TimelockController
-            TimelockController timelockController = new TimelockController(60, proposers, executors, address(0));
+            TimelockController timelockController = new TimelockController(
+                60,
+                proposers,
+                executors,
+                address(0)
+            );
 
             // Add PROTOCOL_TIMELOCK address
-            addresses.addAddress("PROTOCOL_TIMELOCK", address(timelockController), true);
+            addresses.addAddress(
+                "PROTOCOL_TIMELOCK",
+                address(timelockController),
+                true
+            );
         }
 
         addresses.printJSONChanges();
     }
 
     function run() public override {
-        setAddresses(new Addresses("./addresses/Addresses.json"));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         super.run();
     }
 
     function validate() public view override {
-        TimelockController timelockController = TimelockController(payable(addresses.getAddress("PROTOCOL_TIMELOCK")));
+        TimelockController timelockController = TimelockController(
+            payable(addresses.getAddress("PROTOCOL_TIMELOCK"))
+        );
         address dev = addresses.getAddress("DEPLOYER_EOA");
 
         // ensure deployer has proposer role
-        assertTrue(timelockController.hasRole(timelockController.PROPOSER_ROLE(), dev));
+        assertTrue(
+            timelockController.hasRole(timelockController.PROPOSER_ROLE(), dev)
+        );
 
         // ensure deployer has executor role
-        assertTrue(timelockController.hasRole(timelockController.EXECUTOR_ROLE(), dev));
+        assertTrue(
+            timelockController.hasRole(timelockController.EXECUTOR_ROLE(), dev)
+        );
     }
 }

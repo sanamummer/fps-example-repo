@@ -19,19 +19,27 @@ contract BravoProposal_02 is GovernorBravoProposal {
     function run() public override {
         setPrimaryForkId(vm.createSelectFork("sepolia"));
 
-        setAddresses(new Addresses(vm.envOr("ADDRESSES_PATH", string("addresses/Addresses.json"))));
+        string memory addressesFolderPath = "./addresses";
+        uint256[] memory chainIds = new uint256[](1);
+        chainIds[0] = 11155111;
+
+        setAddresses(new Addresses(addressesFolderPath, chainIds));
 
         setGovernor(addresses.getAddress("PROTOCOL_GOVERNOR"));
 
         super.run();
     }
 
-    function build() public override buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO")) {
+    function build()
+        public
+        override
+        buildModifier(addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO"))
+    {
         /// STATICCALL -- not recorded for the run stage
         address timelock = addresses.getAddress("PROTOCOL_TIMELOCK_BRAVO");
         Vault bravoVault = Vault(addresses.getAddress("BRAVO_VAULT"));
         address token = addresses.getAddress("BRAVO_VAULT_TOKEN");
-        (uint256 amount,) = bravoVault.deposits(address(token), timelock);
+        (uint256 amount, ) = bravoVault.deposits(address(token), timelock);
 
         /// CALLS -- mutative and recorded
         bravoVault.withdraw(token, payable(timelock), amount);
@@ -46,7 +54,10 @@ contract BravoProposal_02 is GovernorBravoProposal {
         uint256 balance = token.balanceOf(address(bravoVault));
         assertEq(balance, 0);
 
-        (uint256 amount,) = bravoVault.deposits(address(token), address(timelock));
+        (uint256 amount, ) = bravoVault.deposits(
+            address(token),
+            address(timelock)
+        );
         assertEq(amount, 0);
 
         assertEq(token.balanceOf(address(timelock)), 10_000_000e18);
